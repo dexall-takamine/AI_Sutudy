@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">生成AI・AIエージェント完全入門</div>
+    </header>
+
+    <main>
+      <section class="cover">
+        <div class="hero">
+          <div class="hero-text">
+            <div class="kick">オンライン教科書</div>
+            <h1>生成AI・AIエージェント<br>完全入門</h1>
+            <p class="sub">仕組みをゼロから理解し、業務で活用・設計できるようになるための実践ガイド。<br>専門用語を平易な言葉と図解に置き換えて、体系的に学べます。</p>
+            <div class="meta">全13章＋付録 ／ 図解・理解度チェック・実践課題つき</div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <svg viewBox="0 0 440 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+                  <stop offset="0%" stop-color="#b69ae0" stop-opacity=".35"/>
+                  <stop offset="100%" stop-color="#b69ae0" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <circle cx="220" cy="180" r="180" fill="url(#glow)"/>
+              <!-- connections (input -> hidden -> output) -->
+              <g stroke="#c9b6e6" stroke-opacity=".30" stroke-width="1.2">
+                <path d="M70 90 L210 70 M70 90 L210 150 M70 90 L210 230"/>
+                <path d="M70 180 L210 70 M70 180 L210 150 M70 180 L210 230 M70 180 L210 310"/>
+                <path d="M70 270 L210 150 M70 270 L210 230 M70 270 L210 310"/>
+                <path d="M210 70 L360 130 M210 150 L360 130 M210 150 L360 250 M210 230 L360 130 M210 230 L360 250 M210 310 L360 250"/>
+              </g>
+              <!-- nodes -->
+              <g class="net">
+                <circle class="nd" cx="70"  cy="90"  r="9"/>
+                <circle class="nd" cx="70"  cy="180" r="9"/>
+                <circle class="nd" cx="70"  cy="270" r="9"/>
+                <circle class="nd hot" cx="210" cy="70"  r="11"/>
+                <circle class="nd" cx="210" cy="150" r="11"/>
+                <circle class="nd" cx="210" cy="230" r="11"/>
+                <circle class="nd hot" cx="210" cy="310" r="11"/>
+                <circle class="nd" cx="360" cy="130" r="10"/>
+                <circle class="nd hot" cx="360" cy="250" r="10"/>
+              </g>
+              <!-- central chip -->
+              <g transform="translate(220 180)">
+                <rect x="-34" y="-34" width="68" height="68" rx="16" fill="#6a4c93" stroke="#d8c9f0" stroke-width="1.5"/>
+                <path d="M-14 -6 h12 v-8 l10 14 -10 14 v-8 h-12 z" fill="#ffffff" opacity=".95"/>
+                <g stroke="#d8c9f0" stroke-width="1.5">
+                  <path d="M-34 -14 h-10 M-34 0 h-10 M-34 14 h-10 M34 -14 h10 M34 0 h10 M34 14 h10 M-14 -34 v-10 M0 -34 v-10 M14 -34 v-10 M-14 34 v10 M0 34 v10 M14 34 v10"/>
+                </g>
+              </g>
+              <!-- orbiting accents -->
+              <circle class="orb" cx="360" cy="60" r="5" fill="#e0b876"/>
+              <circle class="orb" cx="100" cy="330" r="4" fill="#c9b6e6"/>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <div class="idx-wrap">
+        <h2>目次</h2>
+        <p class="idx-sub">読みたい章から始められます。第1章から順に進むと、基礎 → 仕組み → エージェント → 実践 → 設計・導入 → 未来の流れで理解できます。</p>
+        <div class="chapter-grid">
+          <a class="cgcard" href="ch00.html"><span class="cn">00</span><span class="cinfo"><span class="ct">はじめに</span><span class="cd">本書の目的・学べること・AI時代に求められるスキル・読み進め方</span></span></a>
+          <a class="cgcard" href="ch01.html"><span class="cn">01</span><span class="cinfo"><span class="ct">AIとは何か</span><span class="cd">AI・機械学習・深層学習・生成AI・LLMの関係を整理する</span></span></a>
+          <a class="cgcard" href="ch02.html"><span class="cn">02</span><span class="cinfo"><span class="ct">LLMはなぜ文章を生成できるのか</span><span class="cd">Token・Embedding・Transformer・Attentionの仕組み</span></span></a>
+          <a class="cgcard" href="ch03.html"><span class="cn">03</span><span class="cinfo"><span class="ct">LLMはどのように学習しているのか</span><span class="cd">事前学習・追加学習・RLHF・推論・ハルシネーション</span></span></a>
+          <a class="cgcard" href="ch04.html"><span class="cn">04</span><span class="cinfo"><span class="ct">生成AIとAIエージェントの違い</span><span class="cd">「答えるAI」と「動くAI」の境界を理解する</span></span></a>
+          <a class="cgcard" href="ch05.html"><span class="cn">05</span><span class="cinfo"><span class="ct">生成AIのメリット・デメリット・リスク</span><span class="cd">メリット・デメリット／ハルシネーション・情報漏えい・著作権・セキュリティ</span></span></a>
+          <a class="cgcard" href="ch06.html"><span class="cn">06</span><span class="cinfo"><span class="ct">AIエージェントとは何か</span><span class="cd">Planner・Memory・Tool Calling・Reflectionなど構成要素</span></span></a>
+          <a class="cgcard" href="ch07.html"><span class="cn">07</span><span class="cinfo"><span class="ct">エージェントを支える技術</span><span class="cd">RAG・MCP・Vector DB・Function Calling・マルチエージェント</span></span></a>
+          <a class="cgcard" href="ch08.html"><span class="cn">08</span><span class="cinfo"><span class="ct">AIはどのように仕事をこなすのか</span><span class="cd">メール分類・議事録・営業資料・開発などの実例</span></span></a>
+          <a class="cgcard" href="ch09.html"><span class="cn">09</span><span class="cinfo"><span class="ct">AIが得意なこと・苦手なこと</span><span class="cd">任せてよい仕事／人間が判断すべき仕事／協働</span></span></a>
+          <a class="cgcard" href="ch10.html"><span class="cn">10</span><span class="cinfo"><span class="ct">AIシステムの設計</span><span class="cd">RAG・エージェント・MCP・マルチエージェントの設計</span></span></a>
+          <a class="cgcard" href="ch11.html"><span class="cn">11</span><span class="cinfo"><span class="ct">AI導入とガバナンス</span><span class="cd">PoC・ガバナンス・セキュリティ・コンプライアンス・運用</span></span></a>
+          <a class="cgcard" href="ch12.html"><span class="cn">12</span><span class="cinfo"><span class="ct">AIの未来（2026〜2030）</span><span class="cd">エージェントの進化・AGI・AIネイティブ企業・働き方</span></span></a>
+          <a class="cgcard" href="ch13.html"><span class="cn">13</span><span class="cinfo"><span class="ct">付録</span><span class="cd">用語集・FAQ・実践プロンプト集・サービス一覧・参考文献</span></span></a>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

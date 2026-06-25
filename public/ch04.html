@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第4章 生成AIとAIエージェントの違い｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第4章 生成AIとAIエージェントの違い</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">04</span><span>概念</span></div>
+          <h1 class="ch-title">生成AIとAIエージェントの違い</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            <b>「答えるAI（生成AI）」</b>と<b>「動くAI（AIエージェント）」</b>の違いを理解し、エージェントを支える <b>RAG・MCP・Function Calling・マルチエージェント</b> の役割を説明できるようになる。
+          </div>
+        </div>
+
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">答えるAIと動くAI</a></li>
+            <li><a href="#s2">AIエージェントの基本構造</a></li>
+            <li><a href="#s3">Browser AgentとComputer Use</a></li>
+            <li><a href="#s4">RAG ── 調べてから答える</a></li>
+            <li><a href="#s5">MCPとFunction Calling ── ツールへつなぐ</a></li>
+            <li><a href="#s6">マルチエージェント</a></li>
+            <li><a href="#s7">メリット・リスクと人間の役割</a></li>
+          </ol>
+        </div>
+
+        <!-- 4-1 -->
+        <h2 id="s1"><span class="sec">4-1</span>答えるAIと動くAI</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>生成AIは質問に<b>答える</b>だけ。AIエージェントは目的達成のために自分で考え・調べ・ツールを使い、<b>仕事を実行する</b>AI。</span>
+        </div>
+        <p>初心者は「ChatGPT＝AIエージェント」と思いがちだが、両者は別物。生成AIは「質問→回答」で終わる。AIエージェントは「依頼→計画→ツール利用→実行→確認」まで進める。Agentは英語で「代理人・代行者」。旅行代理店が代わりに予約するように、人間の代わりに仕事を進める。</p>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v12H8l-4 4z"/></svg>生成AI（答えるAI）</h4>
+            <ul>
+              <li>「メールを書いて」→ 本文を書く</li>
+              <li>送信ボタンは人間が押す</li>
+              <li>「ホテル候補はこちら」で終わる</li>
+              <li>質問→回答で完結</li>
+            </ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>AIエージェント（動くAI）</h4>
+            <ul>
+              <li>宛先・添付を確認し、実際に送信</li>
+              <li>予算確認→検索→比較→予約まで実行</li>
+              <li>カレンダー登録・完了報告まで</li>
+              <li>仕事そのものを実行</li>
+            </ul>
+          </div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">あなた<small>依頼</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">LLM<small>計画</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ツール利用</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">実行・確認</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">完了</div>
+          </div>
+          <div class="figure-cap">図 4-1　生成AIは「LLM→回答」で終わるが、エージェントは途中の処理が大幅に増える</div>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>ChatGPT＝AIエージェントで、何でも自動でできる</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>ChatGPTはLLM中心のサービス。エージェントは<b>LLM＋ツール＋計画・実行機能</b>を組み合わせたシステム。ツールや権限が無ければ操作はできない</span></div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>生成AI＝答えるAI／AIエージェント＝仕事を実行するAI</li>
+            <li>LLMはエージェントの「頭脳」（中の一部）</li>
+            <li>AIは「答えるAI」から「働くパートナー」へ進化している</li>
+          </ul>
+        </div>
+
+        <!-- 4-2 -->
+        <h2 id="s2"><span class="sec">4-2</span>AIエージェントの基本構造</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>ほとんどのAIエージェントは「目標を理解し、計画し、調べ、実行し、確認し、必要ならやり直す」という共通の流れで動く。</span>
+        </div>
+        <p>人間が仕事をするときの流れと同じ。OpenAI Agents SDK・LangGraph・CrewAI・AutoGen など多くのフレームワークがこの構造を共有している。8つの要素を順に回す。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">Goal<small>何を達成するか</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Planning<small>手順へ分解</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Reasoning<small>最適な方法を考える</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Memory<small>情報を覚える</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Tool Use<small>外部ツール利用</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Action<small>実際に実行</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Observation<small>結果を確認</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Reflection<small>失敗を分析し改善</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">完了<small>問題があればPlanningへ戻る</small></div>
+          </div>
+          <div class="figure-cap">図 4-2　AIエージェントの基本ループ（失敗時はReflectionからPlanningへ戻る）</div>
+        </div>
+        <table>
+          <tr><th>要素</th><th>役割</th></tr>
+          <tr><td>Goal</td><td>「何を達成したいか」という最終目的。曖昧だとAIは動けない</td></tr>
+          <tr><td>Planning</td><td>大きな仕事を小さな手順へ分解（Task Decomposition）</td></tr>
+          <tr><td>Reasoning</td><td>条件を比較し最適な方法を考える（推論モデルが活躍）</td></tr>
+          <tr><td>Memory</td><td>必要な情報を覚える。短期／長期／外部（RAG・DB）がある</td></tr>
+          <tr><td>Tool Use</td><td>メール・検索・カレンダーなど外部ツールを呼ぶ</td></tr>
+          <tr><td>Action</td><td>API等を通じて実際に操作を実行する</td></tr>
+          <tr><td>Observation</td><td>実行結果を確認。確認しないと「できました」と嘘をつく恐れ</td></tr>
+          <tr><td>Reflection</td><td>失敗の原因を考え計画を修正し再挑戦。成功率が上がる</td></tr>
+        </table>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>最も重要なのは「LLM選び」ではなく「設計」</div>
+          <p>初心者は「賢いLLMに変えれば賢くなる」と考えがちだが、実際は <b>Goal・Planning・Memory・Tool・Reflection の設計</b>が品質を大きく左右する。AIエージェントは「仕事の進め方」をソフトウェアとして再現した仕組み、いわば優秀な新入社員に近い。</p>
+        </div>
+
+        <!-- 4-3 -->
+        <h2 id="s3"><span class="sec">4-3</span>Browser AgentとComputer Use</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIに「Webブラウザを使う力」を与えたのが<b>Browser Agent</b>、「PC全体を画面で操作する力」を与えたのが<b>Computer Use</b>。</span>
+        </div>
+        <p>Browser Agentは単なるWeb検索と違い、目的を理解し、検索語を考え、ページを読み、複数サイトを比較し、出典付きでレポートまで作る ── AIに「Web調査員」の役割を持たせる仕組み。Computer Useはさらに広く、画面を見て（スクリーンショット／UI要素／OCR）、マウス・キーボードで人間のようにアプリやファイルを操作する。AIに「目」と「手」を与える技術。</p>
+        <table>
+          <tr><th>項目</th><th>Browser Agent</th><th>Computer Use</th></tr>
+          <tr><td>操作対象</td><td>Webブラウザ</td><td>PC全体（OS・アプリ・ファイル）</td></tr>
+          <tr><td>代表作業</td><td>Web検索・比較・フォーム入力</td><td>Excel・PDF・業務システム入力</td></tr>
+          <tr><td>難易度</td><td>中</td><td>高</td></tr>
+          <tr><td>リスク</td><td>Web誤操作・規約違反</td><td>PC全体の誤操作</td></tr>
+        </table>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>RPAとの違い</div>
+          <p>従来のRPAは「決まった画面操作」を自動化するだけ。Computer Useは<b>LLMの判断力</b>を加えるため、APIの無い古い業務システムでも柔軟に操作できる。ただし画面変更に弱く、実行速度も遅くなりがち。</p>
+        </div>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>注意すべき限界</div>
+          <p>ログインが必要なサイト・CAPTCHA・動的サイト・自動操作禁止の規約には対応できない（突破すべきでない）。誤クリック・誤入力（10,000円→100,000円など）・情報漏えいの恐れがあるため、<b>送信・予約・購入・削除は人間承認</b>を必須にする。</p>
+        </div>
+
+        <!-- 4-4 -->
+        <h2 id="s4"><span class="sec">4-4</span>RAG ── 調べてから答える</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>RAG（検索拡張生成）は、必要な情報を<b>検索（Retrieval）してから回答を生成（Generation）</b>する仕組み。AIが「分からないことを調べてから答える」。</span>
+        </div>
+        <p>LLMはネット上の一般知識は持つが、あなたの会社の規程・マニュアル・契約書は知らない。文書が更新されるたびに学習し直す（Fine-tuning）のは非現実的。そこで、回答前に社内文書を読ませるのがRAG。新人が就業規則を見ながら答えるのと同じで、「ズル」ではなく「資料を確認して仕事をする」こと。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">質問</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Embedding<small>意味を数字へ</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ベクトルDB検索<small>Retrieval</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">関連文書をLLMへ<small>Context Injection</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">回答生成</div>
+          </div>
+          <div class="figure-cap">図 4-4　RAGの流れ。ベクトルDBは「旅費」から「交通費・宿泊費」まで意味の近い文書を探せる</div>
+        </div>
+        <table>
+          <tr><th>項目</th><th>Fine-tuning</th><th>RAG</th></tr>
+          <tr><td>モデル更新</td><td>必要（知識を組み込む）</td><td>不要（検索するだけ）</td></tr>
+          <tr><td>最新・社内情報</td><td>苦手・更新が大変</td><td>得意（文書を更新するだけ）</td></tr>
+          <tr><td>コスト</td><td>高い</td><td>比較的低い</td></tr>
+          <tr><td>主な用途</td><td>話し方・専門能力の改善</td><td>最新・個別情報の参照</td></tr>
+        </table>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>RAGを使えばハルシネーション（誤情報）はなくなる</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>RAGは根拠を提供するが、LLMが誤って解釈する可能性は残る。<b>出典を表示</b>し、分からない時は「分からない」と返す設計が必要</span></div>
+        </div>
+
+        <!-- 4-5 -->
+        <h2 id="s5"><span class="sec">4-5</span>MCPとFunction Calling ── ツールへつなぐ</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M8 13h.01M16 13h.01"/></svg></span>
+          <span class="txt"><small>一言でいうと</small><b>Function Calling</b>はLLMが「いまツールを呼ぶべきだ」と判断する仕組み。<b>MCP</b>はAIと外部ツールを共通ルールでつなぐ「USB-C」のような標準規格。</span>
+        </div>
+        <p>LLM単体ではメール送信もカレンダー登録もできない。Function Callingは、AIが文脈から「ここでは <code>calendar.create_event</code> を呼ぶべき」と判断し、考えるだけのAIを「行動するAI」へ変える仕組み。</p>
+        <p>MCP（Model Context Protocol）は2024年に <b>Anthropic</b> が提唱したオープンなプロトコルで、OpenAIなど多くのツールでも採用が進む。従来はSlack API・GitHub API…とサービスごとに個別実装が必要だったが、MCPに対応すれば共通ルールで接続できる。</p>
+        <div class="figure">
+          <div class="layers">
+            <div class="layer l1">Host（AIアプリ全体）<small>Claude Desktop・ChatGPT・VS Code・Cursor …</small></div>
+            <div class="layer l2">MCP Client（Serverへ接続して利用する側）</div>
+            <div class="layer l3">MCP Server（ツール・データを提供）<small>→ Slack / GitHub / Google Drive / 社内DB / Salesforce</small></div>
+          </div>
+          <div class="figure-cap">図 4-5　MCPの全体構成。Host内でClientが動き、Server経由で各サービスへつながる</div>
+        </div>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>API</td><td>サービス同士を接続する仕組み（サービスごとに違う）</td></tr>
+          <tr><td>MCP</td><td>AIがAPIやツールを統一的に使うための共通プロトコル（APIの上にある）</td></tr>
+          <tr><td>Tool</td><td>AIが使える「機能」（検索・メール送信など）。MCPは「接続ルール」</td></tr>
+          <tr><td>MCP Server</td><td>ツール・データを提供する側（GitHub MCP Server 等）</td></tr>
+          <tr><td>MCP Client / Host</td><td>Serverを利用する側／AIアプリ全体を動かす土台</td></tr>
+        </table>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>権限とセキュリティの設計が不可欠</div>
+          <p>削除・送信・更新までできると誤操作が危険。<b>読み取り専用から導入</b>し、更新・削除系は人間承認、Toolごとに最小権限、監査ログを残す。MCPがあってもセキュリティ設計は不要にならない。</p>
+        </div>
+
+        <!-- 4-6 -->
+        <h2 id="s6"><span class="sec">4-6</span>マルチエージェント</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 19a5 5 0 0 1 10 0M12 19a5 5 0 0 1 10 0"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>複数のAIエージェントが役割を分担し、協力して1つの仕事を完成させる仕組み。いわば「AI版の組織設計」。</span>
+        </div>
+        <p>1つのAIに全部やらせるより、専門AI（調査・分析・作成・レビューなど）へ分けた方が品質が上がることがある。会社で営業・開発・法務・経理が分かれているのと同じ。代表的な3つの構成がある。</p>
+        <div class="figure">
+          <div class="tree">
+            <ul>
+              <li><span class="node lv0">リーダーAI（Supervisor）</span>
+                <ul>
+                  <li><span class="node">調査AI</span></li>
+                  <li><span class="node">分析AI</span></li>
+                  <li><span class="node">資料作成AI</span></li>
+                  <li><span class="node lv1">レビューAI ── 統合して最終回答</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="figure-cap">図 4-6　Supervisor型のイメージ。リーダーAIが仕事を割り振り、結果を統合する</div>
+        </div>
+        <table>
+          <tr><th>構成</th><th>特徴</th><th>実務利用</th></tr>
+          <tr><td>Supervisor型</td><td>リーダーAIが複数AIへ仕事を割り振る。管理しやすい</td><td>非常に多い</td></tr>
+          <tr><td>Team型</td><td>リーダー無しでAI同士が対等に相談。柔軟だが通信コスト大</td><td>一部</td></tr>
+          <tr><td>Specialist型</td><td>税務AI・法務AIなど専門分野ごとに分担。専門性が高い</td><td>多い</td></tr>
+        </table>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>AIを増やせば必ず性能が上がる</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>役割分担が不適切だと通信コストと複雑さだけが増える。<b>無限ループ</b>を防ぐため最大実行回数・タイムアウトを設定。小さな仕事はシングルエージェントで十分</span></div>
+        </div>
+
+        <!-- 4-7 -->
+        <h2 id="s7"><span class="sec">4-7</span>メリット・リスクと人間の役割</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIエージェントは強力だが万能ではない。導入では<b>メリットだけでなくリスクも理解し、人間との協調（Human in the Loop）</b>を設計することが重要。</span>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul>
+              <li>仕事そのものを自動化できる</li>
+              <li>24時間稼働、複数ツールを連携</li>
+              <li>失敗から改善（Reflection）できる</li>
+              <li>人間は判断・交渉に集中できる</li>
+            </ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul>
+              <li>誤った判断・行動の可能性</li>
+              <li>システムが複雑になり保守が難しい</li>
+              <li>LLM呼び出しが増えコスト増</li>
+              <li>エラーが連鎖する</li>
+            </ul>
+          </div>
+        </div>
+        <table>
+          <tr><th>リスク</th><th>内容</th><th>対策</th></tr>
+          <tr><td>誤操作</td><td>誤ったメール送信や予約・削除</td><td>人間の承認（Human in the Loop）</td></tr>
+          <tr><td>ハルシネーション</td><td>誤情報に基づく行動</td><td>RAG・出典確認</td></tr>
+          <tr><td>情報漏えい</td><td>機密情報へのアクセス</td><td>権限管理・アクセス制御</td></tr>
+          <tr><td>コスト増</td><td>API・GPU利用料</td><td>実行回数の最適化</td></tr>
+          <tr><td>無限ループ</td><td>同じ処理を繰り返す</td><td>最大実行回数・タイムアウト</td></tr>
+        </table>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">AI<small>下書き作成</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">人間<small>確認・承認</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">AIが送信・実行</div>
+          </div>
+          <div class="figure-cap">図 4-7　Human in the Loop ── 重要操作は人間が途中で確認する</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>人間が不要になるわけではない</div>
+          <p>契約・採用・医療・金融など、重要な判断や法的責任を伴う場面では<b>最終判断は人間が行う</b>べき。AIエージェントは「自動化」ではなく、状況を見て手段を選び修正する「半自律的な業務遂行」に近い。</p>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第4章まとめ</h2>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この章の要点</div>
+          <ul>
+            <li>生成AI＝「答えるAI」、AIエージェント＝「動くAI（仕事を実行）」</li>
+            <li>エージェントは Goal→Planning→…→Observation→Reflection のループで動く</li>
+            <li>RAGは検索してから答える（Fine-tuningと違い学習ではない）</li>
+            <li>MCPはAIと外部ツールをつなぐ共通プロトコル（Function Callingで呼び出す）</li>
+            <li>重要操作はHuman in the Loopで人間が承認することが不可欠</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>AIエージェント</td><td>目的達成のため考え・調べ・ツールを使い仕事を実行するAI</td></tr>
+          <tr><td>Reflection</td><td>失敗の原因を考え計画を修正して再挑戦する仕組み</td></tr>
+          <tr><td>Browser Agent</td><td>AIがブラウザを使い調査・操作する仕組み</td></tr>
+          <tr><td>Computer Use</td><td>AIが画面を見てPC全体を操作する仕組み</td></tr>
+          <tr><td>RAG</td><td>検索拡張生成。関連文書を検索してから回答する</td></tr>
+          <tr><td>Embedding</td><td>文章を意味のベクトル（数字）へ変換する技術</td></tr>
+          <tr><td>MCP</td><td>AIと外部ツールをつなぐ共通プロトコル（Anthropic提唱・2024）</td></tr>
+          <tr><td>Function Calling</td><td>LLMがツールを呼ぶべきと判断する仕組み</td></tr>
+          <tr><td>マルチエージェント</td><td>複数AIが役割分担して協力する仕組み</td></tr>
+          <tr><td>Human in the Loop</td><td>重要操作で人間が途中に入り承認する設計</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>生成AIとAIエージェントの最も大きな違いは？</div>
+            <ul class="opts"><li>A. 使うLLMの種類</li><li>B. 回答するだけか、仕事を実行するか</li><li>C. 日本語か英語か</li><li>D. 無料か有料か</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　生成AIは「答えるAI」、エージェントは計画・ツール利用・実行まで行う「動くAI」。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>AIエージェントが結果を確認する工程はどれ？</div>
+            <ul class="opts"><li>A. Planning</li><li>B. Memory</li><li>C. Observation</li><li>D. Goal</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　Observationで実行結果を確認する。確認しないと「できました」と誤報告する恐れがある。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>RAGの説明として正しいのは？</div>
+            <ul class="opts"><li>A. モデルを追加学習させる</li><li>B. 関連文書を検索してから回答する</li><li>C. ハルシネーションを完全になくす</li><li>D. ブラウザを操作する</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　RAGは検索（Retrieval）してから生成（Generation）する仕組み。学習（Fine-tuning）ではない。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>MCPを一言で例えると？</div>
+            <ul class="opts"><li>A. AIのための「USB-C」（共通接続規格）</li><li>B. 新しいLLM</li><li>C. 検索エンジン</li><li>D. プログラミング言語</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：A</b>　MCPはAIと外部ツールを共通ルールでつなぐ標準規格。2024年にAnthropicが提唱。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>重要操作（送金・契約・送信）でとるべき設計は？</div>
+            <ul class="opts"><li>A. すべてAIに任せる</li><li>B. Human in the Loop（人間が承認）</li><li>C. 確認せず高速実行</li><li>D. ログを残さない</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　取り消しにくい操作は人間が途中で確認・承認する設計が不可欠。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>違いを言葉にする</h4><p>同じ依頼を「生成AI」と「AIエージェント」が処理したらどう違うか、身近な業務（例：会議調整）で書き出してみる。</p></div>
+            <div class="task"><h4><span class="tn">課題2</span>ループを追う</h4><p>「来週の営業会議を設定して」という依頼を、Goal→Planning→…→Reflection の8要素に当てはめて整理する。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>AIに聞く</h4>
+              <div class="prompt-box">RAGとFine-tuningの違いを、
+社内の経費精算ルールをAIに答えさせたい場合を例に、
+初心者向けに説明してください。</div>
+              <p>本書の説明と比べ、過不足をまとめる。</p>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>承認ポイントを設計する</h4><p>自分の業務でAIエージェントを使うなら、どの操作を「人間承認」にすべきか3つ挙げ、理由を書く。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch03.html"><span class="dir">← 前の章</span><span class="t">第3章 LLMはどのように学習しているのか</span></a>
+          <a class="next" href="ch05.html"><span class="dir">次の章 →</span><span class="t">第5章 生成AIのメリット・デメリット・リスク</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

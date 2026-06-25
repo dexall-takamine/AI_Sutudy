@@ -1,0 +1,16 @@
+{
+  "name": "ai-study-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "生成AI・AIエージェント完全入門 — オンライン教材（Next.jsで配信）",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p ${PORT:-3000}"
+  },
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

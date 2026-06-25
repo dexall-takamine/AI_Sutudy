@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第2章 LLMはなぜ文章を生成できるのか｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第2章 LLMはなぜ文章を生成できるのか</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">02</span><span>仕組み</span></div>
+          <h1 class="ch-title">LLMはなぜ文章を生成できるのか</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            ChatGPTが文章を作る内部処理を <b>Token → Embedding → Transformer → Decoder</b> の流れで理解し、「AIは理解しているのではなく<b>次の単語を予測している</b>」と自分の言葉で説明できるようになる。
+          </div>
+        </div>
+
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AIは文章を理解しているのか</a></li>
+            <li><a href="#s2">Token と Tokenizer</a></li>
+            <li><a href="#s3">Embedding（埋め込み）</a></li>
+            <li><a href="#s4">Positional Encoding（位置情報）</a></li>
+            <li><a href="#s5">Transformer とは</a></li>
+            <li><a href="#s6">Self-Attention / Multi-Head Attention</a></li>
+            <li><a href="#s7">Feed Forward と Decoder</a></li>
+            <li><a href="#s8">Sampling・Temperature・Top-p</a></li>
+            <li><a href="#s9">Context Window</a></li>
+          </ol>
+        </div>
+
+        <!-- 全体像 figure -->
+        <div class="figure">
+          <div class="flow">
+            <div class="step">入力<small>「東京のおすすめ観光地は？」</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Tokenizer<small>文章を分割</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Embedding<small>意味を数字へ</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Transformer<small>文脈を理解</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">次の単語を予測</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">回答生成<small>「浅草・上野・渋谷が…」</small></div>
+          </div>
+          <div class="figure-cap">図 2-0　LLM全体の流れ ── 複雑に見えて、大きく見ればこれだけ</div>
+        </div>
+
+        <!-- 2-1 -->
+        <h2 id="s1"><span class="sec">2-1</span>AIは文章を理解しているのか</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a4 4 0 0 0-4 4 4 4 0 0 0-2 7 4 4 0 0 0 6 3 4 4 0 0 0 6-3 4 4 0 0 0-2-7 4 4 0 0 0-4-4Z"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIは人間のように「意味」を理解しているのではなく、大量の文章から学んだパターンで<b>次に続く単語を予測</b>している。</span>
+        </div>
+        <p>人間は「今日は雨だから」と読めば、経験から「傘を持とう」と想像できる。AIに経験・感情・常識はない。代わりに膨大な文章を読み、「今日は雨だから」の後に「傘」が続きやすいことを学んでいる。つまり <b>統計的に最も自然な続き</b>を選んでいる。</p>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>AIの中には巨大な辞書があり、知識を引いて答えている</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>「日本の首都」の後に「東京」が来るパターンを<b>何度も学習</b>しているため、その単語が最も出やすくなっているだけ</span></div>
+        </div>
+        <p>LLMの本質は <b>巨大な次単語予測エンジン</b>。たとえば「私は朝ごはんに」なら内部では確率が計算される。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">私は朝ごはんに</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">パン 42%<small>ご飯 31% / 卵 9% …</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">「パン」を選ぶ</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">続きをまた予測<small>これを何十回も繰り返す</small></div>
+          </div>
+          <div class="figure-cap">図 2-1　予測を繰り返して長い文章が完成する</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>一文字ずつ書いているわけではない</div>
+          <p>AIは文字ではなく <b>Token（トークン）</b> という単位で処理する。次節で詳しく扱う。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは人間のようには理解していない</li>
+            <li>大量データからパターンを学習している</li>
+            <li>次に来る単語を予測している</li>
+          </ul>
+        </div>
+
+        <!-- 2-2 -->
+        <h2 id="s2"><span class="sec">2-2</span>Token と Tokenizer</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="6" height="6" rx="1"/><rect x="11" y="6" width="6" height="6" rx="1"/><rect x="7" y="14" width="6" height="6" rx="1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small><b>Token</b> はAIが文章を扱う最小単位。それを作るプログラムが <b>Tokenizer</b>。AIはまず文章を細かく分割する。</span>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">私は猫が好きです</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">私</div><div class="step soft">は</div><div class="step soft">猫</div><div class="step soft">が</div><div class="step soft">好き</div><div class="step soft">です</div>
+          </div>
+          <div class="figure-cap">図 2-2　Tokenizer が文章を Token へ分割する（英語なら I / like / cats / .）</div>
+        </div>
+        <p>コンピュータは文章をそのまま計算できない。レゴブロックのように小さな単位へ分け、組み立てて処理する。日本語にはスペースがないため、どこで区切るかは Tokenizer が判断する。</p>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>Tokenizer はモデルごとに違う</div>
+          <p>ChatGPT・Claude・Gemini では Tokenizer が異なるため、同じ文章でも Token数が変わる。API料金は文字数ではなく <b>Token数</b> で決まり、RAG で扱える文章量にも影響する。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Token は AI にとっての「単語」のようなもの</li>
+            <li>Tokenizer は Token を作るプログラム（日本語は分割が難しい）</li>
+            <li>Token数は料金・性能・モデルによって変わる</li>
+          </ul>
+        </div>
+
+        <!-- 2-3 -->
+        <h2 id="s3"><span class="sec">2-3</span>Embedding（埋め込み）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h4l2-6 4 12 2-6h4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Embedding は<b>言葉を「意味を持った数字」へ変換する技術</b>。AIが理解できるのは文字ではなく数字だけ。</span>
+        </div>
+        <p>「猫」という文字は AI には読めない。そこで <code>猫 → [0.82, -0.15, 0.64, …]</code> のように数百〜数千個の数字（ベクトル）へ変換する。これが Embedding。</p>
+        <div class="figure">
+          <div class="tree">
+            <ul>
+              <li><span class="node lv0">意味の地図（Embedding空間）</span>
+                <ul>
+                  <li><span class="node lv1">動物</span>
+                    <ul><li><span class="node">犬・猫・狼 ── 近くに配置</span></li></ul>
+                  </li>
+                  <li><span class="node lv1">乗り物</span>
+                    <ul><li><span class="node">車・電車・飛行機 ── 別の場所に配置</span></li></ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="figure-cap">図 2-3　意味が近い言葉ほど数字（位置）も近くなる</div>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>Embedding は翻訳のことだ</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>意味を数字で表現する技術。だからAIは「犬は猫に近い」と分かる。社内検索（<b>RAG</b>）の中核技術でもある</span></div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは文字ではなく数字を読む</li>
+            <li>Embedding は意味を数字へ変換する</li>
+            <li>意味が近い言葉ほど数字も近くなる</li>
+          </ul>
+        </div>
+
+        <!-- 2-4 -->
+        <h2 id="s4"><span class="sec">2-4</span>Positional Encoding（位置情報）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="19" cy="17" r="2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Positional Encoding は「単語が文章のどこにあるか」をAIへ教える仕組み。Transformer は単語を<b>並列に処理する</b>ため、そのままでは順番が分からない。</span>
+        </div>
+        <p>「私は犬が好きです」と「犬が私は好きです」── 位置情報がなければ、AIにはどちらも同じ単語の集まりに見えてしまう。本のページ番号や電車の座席番号と同じで、番号があるから順番に並べ直せる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">猫<small>Token</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">(0.32, 0.71, -0.52 …)<small>Embedding＝意味</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">＋ Position 3<small>位置＝順番</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Transformer へ<small>「3番目の猫」と分かる</small></div>
+          </div>
+          <div class="figure-cap">図 2-4　Transformer が読むのは「意味 ＋ 位置」</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>なぜ位置情報が要るのか</div>
+          <p>昔の <b>RNN</b> は一語ずつ順番に読むので順序は自然に分かった。Transformer は全部を同時に読む（高速・長文に強い）代わりに、位置を別途追加する必要がある。位置情報は「どこにあるか」を教えるだけで、意味は Transformer 全体で理解する。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Transformer は単語の順番が分からない</li>
+            <li>Positional Encoding で位置を追加する</li>
+            <li>Embedding は「意味」、Position は「順番」</li>
+          </ul>
+        </div>
+
+        <!-- 2-5 -->
+        <h2 id="s5"><span class="sec">2-5</span>Transformer とは</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16" opacity=".5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Transformer は現在の生成AIの<b>頭脳となるアーキテクチャ（設計図）</b>。ChatGPT・Claude・Gemini・Llama・DeepSeek・Qwen など、ほぼすべてのLLMの基礎。</span>
+        </div>
+        <p>2017年、Googleの研究者が論文 <b>「Attention Is All You Need」</b> で Transformer を発表し、生成AIの性能は飛躍的に向上した。Transformer 以前の <b>RNN</b> は文章を順番に読むため、長文だと前半を忘れる <b>長期依存問題</b> を抱えていた。</p>
+        <table>
+          <tr><th></th><th>RNN（昔のAI）</th><th>Transformer</th></tr>
+          <tr><td>読み方</td><td>順番に1語ずつ</td><td>全体をまとめて</td></tr>
+          <tr><td>速度</td><td>遅い</td><td>高速（GPUで並列）</td></tr>
+          <tr><td>長文</td><td>前半を忘れやすい</td><td>全体を見られる</td></tr>
+        </table>
+        <div class="figure">
+          <div class="layers">
+            <div class="layer l1">Token → Embedding → Positional Encoding<small>意味と位置を準備</small></div>
+            <div class="layer l2">Self-Attention（重要な単語を見つける）<small>×　Multi-Head で多視点に</small></div>
+            <div class="layer l2">Feed Forward（情報を整理）</div>
+            <div class="layer l3">これを数十〜百層も繰り返す → Decoder で回答生成</div>
+          </div>
+          <div class="figure-cap">図 2-5　Transformer の内部構造（GPTでは数十〜百以上の層が重なる）</div>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>Transformer ＝ ChatGPT</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>Transformer はAIの設計図（アーキテクチャ）。ChatGPT はそれを利用したサービス</span></div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Transformer は現在のLLMの基盤技術</li>
+            <li>2017年 Google「Attention Is All You Need」から生まれた</li>
+            <li>文章全体を見ながら高速に処理できる</li>
+          </ul>
+        </div>
+
+        <!-- 2-6 -->
+        <h2 id="s6"><span class="sec">2-6</span>Self-Attention / Multi-Head Attention</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Self-Attention は「文章の中でどの単語が重要かをAI自身が判断する」仕組み。Transformer が高性能になった最大の理由。</span>
+        </div>
+        <p>「太郎は花子に本を貸しました。彼女は喜びました。」── 人間はすぐ「彼女＝花子」と分かる。AIは前の文へ目を戻すように、単語同士の <b>関係性</b> を数値で計算する。<b>Self（自分自身）</b> とは「同じ文章の中だけを見る」という意味。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">好き</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">私 20% / 犬 60% / です 10% …<small>全単語との関係を計算</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">「好き」は「犬」と関係が強い</div>
+          </div>
+          <div class="figure-cap">図 2-6a　「私は犬が好きです」── 全員が全員を見て重要度を計算する</div>
+        </div>
+        <p>同じ「アップル」でも、前後を見れば「iPhoneを発売した→Apple社」「食べた→リンゴ」と意味を判断できる。これが <b>文脈理解</b>。さらに 1000文字前の「田中さん」も必要なら見に行けるので長文に強い。</p>
+        <p><b>Multi-Head Attention</b> は、この Self-Attention を<b>複数の視点で同時に動かす</b>仕組み。同じ資料を営業・経理・法務が別の観点で読むのと同じ。</p>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></div><h4>Head 1：誰？</h4><p>佐藤さん</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h4>Head 2：いつ？</h4><p>昨日</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5-7-11a7 7 0 0 1 14 0c0 6-7 11-7 11Z"/><circle cx="12" cy="10" r="2"/></svg></div><h4>Head 3：どこ？</h4><p>東京駅</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/></svg></div><h4>Head 4：何をした？</h4><p>昼食を食べた</p></div>
+        </div>
+        <div class="figure-cap">図 2-6b　「佐藤さんは昨日東京駅で田中さんと昼食を食べた」を複数 Head が多角的に分析し、最後に結合する</div>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>弱点：計算量が大きい</div>
+          <p>100単語なら約100×100＝1万回、1000単語なら約100万回の比較が必要。長文ほどGPU・メモリを大量に消費する。Head が増えるほど計算量も増える。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Self-Attention は「重要な単語はどれか」をAI自身が判断する</li>
+            <li>単語同士の関係を数値として計算する（＝文脈理解の正体）</li>
+            <li>Multi-Head Attention は複数の視点で同時に文章を見る</li>
+          </ul>
+        </div>
+
+        <!-- 2-7 -->
+        <h2 id="s7"><span class="sec">2-7</span>Feed Forward と Decoder</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small><b>Feed Forward Network</b> は Attention で集めた情報を整理する係。<b>Decoder</b> は次の Token を1つずつ生成して文章を書く係。</span>
+        </div>
+        <p>Attention が「情報を集める（Googleで調べる）」なら、FFN は「集めた情報を予算・日程・優先順位で整理する」役割。Transformer は <b>Attention → FFN</b> を何十回も繰り返し、少しずつ理解を深める。</p>
+        <p>最後に Decoder が回答を書く。「日本の首都は？」→「東京」→「です」→「。」と <b>Token を1つずつ追加</b>していく。これを <b>自己回帰生成（Autoregressive Generation）</b> と呼ぶ。スマホの予測変換に似ているが、何兆もの学習データをもとに予測している点が違う。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">東京</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">東京は</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">東京は日本の</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">東京は日本の首都</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">…&lt;END&gt; で終了</div>
+          </div>
+          <div class="figure-cap">図 2-7　Decoder は Token を1つずつ追加し、特殊な &lt;END&gt; Token で回答を終える</div>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>AIは全文を考えてから書いている</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>Token を1つずつ予測しながら書いている。途中で間違えるとその後も誤った方向へ進む ── これが<b>ハルシネーション</b>の原因の一つ</span></div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>FFN は Attention で集めた情報を整理する</li>
+            <li>Transformer は Attention と FFN を何度も繰り返す</li>
+            <li>Decoder は Token を1つずつ生成して文章を書く</li>
+          </ul>
+        </div>
+
+        <!-- 2-8 -->
+        <h2 id="s8"><span class="sec">2-8</span>Sampling・Temperature・Top-p</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 21V10M12 21V4M19 21v-7"/><circle cx="5" cy="7" r="1.6"/><circle cx="12" cy="13" r="1.6"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>これらは<b>「次の Token をどう選ぶか」</b>を決める仕組み。毎回1位だけ選ぶと回答が単調になるため、少しランダム性を持たせる。</span>
+        </div>
+        <p>AIは候補と確率を持っている（例：東京 96% / 大阪 2% / 京都 1% …）。毎回1位だけ選ぶと「面白い物語を書いて」が毎回ほぼ同じになる。<b>Sampling</b> は、たまに違う候補も選ぶ仕組み ── 昼食をたまに寿司にするのと同じ。だから同じ質問でも毎回少し回答が変わる。</p>
+        <table>
+          <tr><th>パラメータ</th><th>役割</th><th>挙動</th></tr>
+          <tr><td>Sampling</td><td>Tokenの選び方</td><td>確率に従い、少しランダムに選ぶ</td></tr>
+          <tr><td>Temperature</td><td>ランダムさの強さ</td><td>低い＝正確・安定／高い＝創造的・不安定</td></tr>
+          <tr><td>Top-p</td><td>候補の数を絞る</td><td>有力候補だけ残し、変な単語を捨てる</td></tr>
+        </table>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">次Token候補<small>100個</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Top-p<small>上位だけ残す</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Temperature<small>ランダムさ調整</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Sampling で Token決定</div>
+          </div>
+          <div class="figure-cap">図 2-8　実際は Top-p で絞り → Temperature で調整 → Sampling で選ぶ（就活で上位10社に絞り、その中から自由に選ぶイメージ）</div>
+        </div>
+        <p><b>Temperature の目安（用途別）</b>。低いほど「教科書」、高いほど「アイデアマン」。</p>
+        <table>
+          <tr><th>用途</th><th>Temperature</th></tr>
+          <tr><td>契約書要約・FAQ・翻訳・プログラム生成</td><td>0 〜 0.3</td></tr>
+          <tr><td>ブログ・通常の会話</td><td>0.7 〜 1.0</td></tr>
+          <tr><td>企画・キャッチコピー</td><td>1.0 前後</td></tr>
+          <tr><td>小説・創作</td><td>1.2 〜 1.5</td></tr>
+        </table>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>低 Temperature</h4>
+            <ul><li>正確・安定・再現性が高い</li><li>事実確認・要約・コードに向く</li><li>創造性は低い</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>高 Temperature</h4>
+            <ul><li>創造的・アイデア豊富</li><li>物語・企画に向く</li><li>ハルシネーション（誤情報）が増える</li></ul>
+          </div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>ChatGPT画面では設定できる？</div>
+          <p>通常の ChatGPT 画面では Temperature・Top-p を直接変更できず、OpenAI 側が用途に合わせた値を設定している。<b>API を使う場合</b>は開発者が <code>temperature</code> <code>top_p</code> を調整できる。Temperature を上げても知識量は増えず、創造性が上がるだけ。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Sampling は Token の選び方（毎回少し違う回答になる理由）</li>
+            <li>Temperature はランダムさ ── 低いほど正確、高いほど創造的</li>
+            <li>Top-p は候補を絞る ── 両方で「正確性」と「創造性」のバランスを取る</li>
+          </ul>
+        </div>
+
+        <!-- 2-9 -->
+        <h2 id="s9"><span class="sec">2-9</span>Context Window（コンテキストウィンドウ）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Context Window は<b>AIが一度に記憶して処理できる情報量</b>。AIの「作業用メモリ」で、Token数で決まる。</span>
+        </div>
+        <p>1000ページ進んだ本の最初の一文を正確に覚えていられないように、AIも一度に扱える量に限界がある。質問・会話履歴・PDF・RAGの検索結果・AIの回答 ── これらすべての合計がこの枠に収まる必要がある。</p>
+        <div class="figure">
+          <div class="layers">
+            <div class="layer l1">会話履歴 ＋ 質問 ＋ 資料 ＋ RAG検索結果 ＋ AIの回答</div>
+            <div class="layer l2">これらの合計が Context Window 内に収まる（例：100万Token対応モデル）</div>
+            <div class="layer l3">枠を超えると古い情報から順に見えなくなる</div>
+          </div>
+          <div class="figure-cap">図 2-9　Context Window を超えると、古い会話から忘れていく</div>
+        </div>
+        <p>長い会話で「さっき言ったこと覚えてる？」が通じなくなるのは、古い情報が枠から外れるため。大きいほど 500ページのPDFや10時間分の議事録もまとめて扱え、RAG にもたくさん渡せる。ただし良いことばかりではない。</p>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>大きいほど良いわけではない</div>
+          <p>Token数が増えるほど <b>計算量・料金・処理時間</b> が増える。実務では「100ページ全部」ではなく「必要な5ページだけ」を渡す方が高速で正確。だから RAG は検索してから AI へ渡している。</p>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>ChatGPT は全部覚えている／長いほど賢い</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>覚えているのは Context Window 内だけ。長いのは「扱える情報が増える」だけで、知識量が増えるわけではない</span></div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Context Window は AI の作業用メモリ（Token数で決まる）</li>
+            <li>長いPDFを読める理由・会話を忘れる理由はこれ</li>
+            <li>大きいほど計算量・料金・時間も増える。RAG でも重要</li>
+          </ul>
+        </div>
+
+        <div data-widget="tokenizer"></div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第2章まとめ</h2>
+        <p>ChatGPT は人間のように理解しているのではなく、次の処理を高速に繰り返す <b>巨大な「次の Token 予測エンジン」</b> である。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">入力文章</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Tokenizer → Token</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Embedding ＋ Positional Encoding</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Transformer（Attention ＋ FFN を数十層）</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Decoder → Sampling / Temperature / Top-p</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">回答完成（Token を1つずつ生成）</div>
+          </div>
+          <div class="figure-cap">図 2-10　第2章で学んだLLMの全工程</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この5つだけ覚えていれば十分</div>
+          <ul>
+            <li>AIは文字ではなく数字を読む（Embedding で意味を数字へ変換）</li>
+            <li>Transformer がLLMの頭脳。基盤は2017年の Transformer</li>
+            <li>Self-Attention が文脈理解の正体。Multi-Head で多視点に</li>
+            <li>Decoder は Token を1つずつ予測して文章を書く</li>
+            <li>Temperature・Top-p で創造性と正確性を、Context Window で扱える量を調整する</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>一言でいうと</th></tr>
+          <tr><td>Token</td><td>AIが扱う文章の最小単位</td></tr>
+          <tr><td>Tokenizer</td><td>文章を Token へ分割する仕組み</td></tr>
+          <tr><td>Embedding</td><td>言葉を意味を持つ数字へ変換する技術</td></tr>
+          <tr><td>Positional Encoding</td><td>単語の位置情報を追加する技術</td></tr>
+          <tr><td>Transformer</td><td>LLMの頭脳となるアーキテクチャ</td></tr>
+          <tr><td>Self-Attention</td><td>重要な単語同士の関係を見つける仕組み</td></tr>
+          <tr><td>Multi-Head Attention</td><td>複数の視点から文章を理解する仕組み</td></tr>
+          <tr><td>Feed Forward Network</td><td>Attention で集めた情報を整理する仕組み</td></tr>
+          <tr><td>Decoder</td><td>Token を1つずつ生成して文章を書く仕組み</td></tr>
+          <tr><td>Sampling</td><td>次の Token をどう選ぶかの仕組み</td></tr>
+          <tr><td>Temperature</td><td>Sampling のランダムさ（創造性）の調整値</td></tr>
+          <tr><td>Top-p</td><td>有力な候補だけに絞る仕組み</td></tr>
+          <tr><td>Context Window</td><td>AIが一度に扱える情報量（作業用メモリ）</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>Token とは何でしょう？</div>
+            <ul class="opts"><li>A. AIモデル</li><li>B. AIが扱う文章の最小単位</li><li>C. Transformer</li><li>D. GPU</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Token は AI が文章を処理するための最小単位。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>Embedding の役割は？</div>
+            <ul class="opts"><li>A. 翻訳</li><li>B. 文字を意味のある数字へ変換する</li><li>C. 要約</li><li>D. 学習</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　AIは文字を直接読めないため、意味を持つ数字（ベクトル）へ変換する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>Transformer 最大の発明は？</div>
+            <ul class="opts"><li>A. GPU</li><li>B. Self-Attention</li><li>C. Tokenizer</li><li>D. OCR</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Self-Attention により文脈理解と並列処理が可能になった。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>Multi-Head Attention とは？</div>
+            <ul class="opts"><li>A. AIが複数ある</li><li>B. 複数の視点で文章を見る</li><li>C. GPUを増やす</li><li>D. モデルを増やす</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　複数の専門家が同じ資料を別の観点で読むイメージ。1つの Transformer の中に複数の Attention があるだけ。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>Decoder は何をしている？</div>
+            <ul class="opts"><li>A. 学習</li><li>B. Token を1つずつ生成する</li><li>C. Embedding</li><li>D. Token化</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Token を1つずつ予測して追加し、文章を完成させる（自己回帰生成）。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>Temperature を高くするとどうなる？</div>
+            <ul class="opts"><li>A. AIが賢くなる（知識が増える）</li><li>B. 創造性が上がり、ハルシネーションのリスクも高まる</li><li>C. 処理が速くなる</li><li>D. 何も変わらない</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　知識量は変わらず、ランダムさ（創造性）が上がる。誤情報も増えやすい。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">7</span>Context Window とは？</div>
+            <ul class="opts"><li>A. AIが一度に扱える情報量</li><li>B. AIの学習データ全体</li><li>C. 画面の表示領域</li><li>D. モデルの数</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：A</b>　Token数で決まる作業用メモリ。超えると古い情報から忘れる。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>Transformer を聞く</h4>
+              <div class="prompt-box">Transformerとは何ですか？
+初心者にも分かるように、例え話を使って説明してください。</div>
+              <p>本書の説明と比較し、違いを整理する。</p>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>Token を考える</h4><p>「私は生成AIを勉強しています。」を Token へ分割するとどうなるか考える。実際の Tokenizer とは一致しなくてよい。「AIは文章を細かく区切る」という考え方を意識する。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>Attention を体験する</h4>
+              <div class="prompt-box">佐藤さんは鈴木さんへ資料を渡しました。
+彼は笑顔でした。
+──「彼」は誰を指しますか？なぜそう判断しましたか？</div>
+              <p>ChatGPT に入力し、文脈理解のイメージをつかむ。</p>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>毎回違う理由を考える</h4><p>「面白い物語を書いてください。」を3回入力し、毎回少しずつ違う理由（Sampling / Temperature）を自分の言葉で説明する。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>API のパラメータを調べる</h4><p>OpenAI / Anthropic のドキュメントで <b>temperature・top_p・max_tokens・context window</b> を調べ、実際にどう制御できるか確認する。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch01.html"><span class="dir">← 前の章</span><span class="t">第1章 AIとは何か</span></a>
+          <a class="next" href="ch03.html"><span class="dir">次の章 →</span><span class="t">第3章 LLMはどのように学習しているのか</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
