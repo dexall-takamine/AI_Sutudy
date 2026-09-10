@@ -1,0 +1,133 @@
+/* =========================================================
+   learn.css — 学習プラットフォーム化レイヤー
+   （読む・聴く・観る／ノート・ブックマーク・進捗・テーマ）
+   既存 style.css を壊さず追加。Apple/Linear/Notion系の質感。
+   ========================================================= */
+
+/* ---------- ダークテーマ（既存変数を上書き） ---------- */
+html[data-theme="dark"]{
+  --paper:#15171c; --surface:#1d2027; --ink:#e8e4da; --ink-soft:#b7b1a4; --ink-faint:#8b867b;
+  --line:#2b2e35; --line-soft:#23262c; --accent:#b79ae0; --accent-deep:#c9b2ef; --accent-soft:#2a2540;
+  --amber:#e0a06a; --amber-soft:#2e2620; --good:#7cc79c; --good-soft:#20291f; --bad:#e08a7c; --bad-soft:#2e2220;
+}
+html[data-theme="dark"] .sidebar{background:#1a1d23}
+html[data-theme="dark"] .sidebar a.ch:hover{background:#23262d}
+html[data-theme="dark"] .cover{background:#221b34}
+html[data-theme="dark"] .prompt-box,html[data-theme="dark"] .tasks .prompt-box{background:#0f1114;color:#dfe7f0}
+html[data-theme="dark"] img{filter:brightness(.9)}
+html,body{transition:background .3s ease,color .3s ease}
+
+/* ---------- 右上ツールバー ---------- */
+.lx-bar{position:fixed;top:14px;right:16px;z-index:120;display:flex;gap:8px;align-items:center}
+.lx-bar button{cursor:pointer;background:var(--surface);border:1px solid var(--line);color:var(--ink);
+  height:38px;min-width:38px;padding:0 10px;border-radius:11px;font-family:inherit;font-size:12.5px;font-weight:600;
+  display:inline-flex;align-items:center;gap:7px;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:.15s}
+.lx-bar button:hover{border-color:var(--accent);color:var(--accent)}
+.lx-bar button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lx-bar .ic{width:17px;height:17px;display:block}
+.lx-prog-mini{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:11px;height:38px;padding:0 12px}
+.lx-prog-mini .ring{--v:0;width:22px;height:22px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--v)*1%), var(--line) 0)}
+.lx-prog-mini b{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+@media (max-width:1000px){.lx-bar{top:auto;bottom:78px;right:12px}}
+
+/* ---------- ポップオーバー（進捗・復習） ---------- */
+.lx-pop{position:fixed;top:60px;right:16px;z-index:121;width:300px;background:var(--surface);
+  border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 18px 50px rgba(0,0,0,.22);
+  display:none;animation:lxpop .18s ease}
+.lx-pop.show{display:block}
+@keyframes lxpop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.lx-pop h4{margin:0 0 12px;font-size:14px;color:var(--ink)}
+.lx-metric{margin:10px 0}
+.lx-metric .l{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);margin-bottom:4px}
+.lx-metric .l b{color:var(--ink)}
+.lx-metric .track{height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+.lx-metric .track i{display:block;height:100%;border-radius:4px;background:var(--accent);transition:width .5s}
+.lx-review a{display:block;padding:8px 10px;border-radius:9px;color:var(--ink-soft);font-size:13px;text-decoration:none;border:1px solid transparent}
+.lx-review a:hover{background:var(--accent-soft);color:var(--accent)}
+.lx-review .empty{color:var(--ink-faint);font-size:12.5px;padding:6px 0}
+
+/* ---------- 「この章を聴く／観る」 起動バー ---------- */
+.lx-launch{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 26px}
+.lx-launch button{cursor:pointer;display:inline-flex;align-items:center;gap:9px;border-radius:12px;padding:11px 16px;
+  font-family:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--ink);transition:.15s}
+.lx-launch button:hover{transform:translateY(-1px);border-color:var(--accent)}
+.lx-launch button .ic{width:18px;height:18px}
+.lx-launch button.audio .ic{color:#1db954}
+.lx-launch button.video .ic{color:var(--accent)}
+.lx-launch button[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ---------- ミニ音声プレイヤー（右下固定・Spotify風） ---------- */
+.lx-mini{position:fixed;right:16px;bottom:16px;z-index:130;width:340px;max-width:calc(100vw - 24px);
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);display:none;animation:lxup .25s ease}
+.lx-mini.show{display:block}
+@keyframes lxup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.lx-mini .top{display:flex;align-items:center;gap:11px}
+.lx-mini .disc{width:42px;height:42px;border-radius:9px;flex:0 0 auto;background:linear-gradient(135deg,#1db954,#0e8a3e);
+  display:flex;align-items:center;justify-content:center;color:#fff}
+.lx-mini .meta{flex:1;min-width:0}
+.lx-mini .meta .t{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lx-mini .meta .s{font-size:11px;color:var(--ink-faint)}
+.lx-mini .x{cursor:pointer;background:none;border:0;color:var(--ink-faint);font-size:18px;line-height:1}
+.lx-seek{display:flex;align-items:center;gap:8px;margin:10px 0 4px}
+.lx-seek input[type=range]{flex:1;accent-color:var(--accent);height:4px}
+.lx-seek .tm{font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums;min-width:38px;text-align:center}
+.lx-ctrls{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
+.lx-ctrls button{cursor:pointer;background:none;border:0;color:var(--ink);border-radius:9px;padding:7px;display:flex;align-items:center}
+.lx-ctrls button:hover{background:var(--accent-soft);color:var(--accent)}
+.lx-ctrls .play{background:var(--accent);color:#fff;width:42px;height:42px;justify-content:center;border-radius:50%}
+.lx-ctrls .play:hover{background:var(--accent-deep);color:#fff}
+.lx-ctrls .spd{font-size:12px;font-weight:700;min-width:40px}
+.lx-ctrls .vol{display:flex;align-items:center;gap:6px}
+.lx-ctrls .vol input{width:60px;accent-color:var(--accent)}
+
+/* ---------- 動画フローティング（PiP・ドラッグ・最小化） ---------- */
+.lx-vid{position:fixed;right:16px;bottom:16px;z-index:129;width:340px;max-width:calc(100vw - 24px);
+  background:#000;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);display:none}
+.lx-vid.show{display:block}
+.lx-vid.audio-open{bottom:186px}     /* 音声ミニと重ならない位置 */
+.lx-vid .hd{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surface);cursor:grab;user-select:none}
+.lx-vid .hd .t{flex:1;font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lx-vid .hd button{cursor:pointer;background:none;border:0;color:var(--ink-faint);font-size:14px;padding:2px 5px;border-radius:6px}
+.lx-vid .hd button:hover{background:var(--accent-soft);color:var(--accent)}
+.lx-vid video{display:block;width:100%;height:auto;background:#000}
+.lx-vid.min{width:210px}
+.lx-vid.min video{height:0;padding:0}
+.lx-vid.dragging{cursor:grabbing;opacity:.96}
+
+/* ---------- 学習メモ ドロワー（右） ---------- */
+.lx-notes{position:fixed;top:0;right:0;height:100vh;width:380px;max-width:90vw;z-index:140;
+  background:var(--surface);border-left:1px solid var(--line);box-shadow:-14px 0 44px rgba(0,0,0,.18);
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column}
+.lx-notes.show{transform:none}
+.lx-notes .nh{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.lx-notes .nh b{flex:1;font-size:15px}
+.lx-notes .nh button{cursor:pointer;background:var(--paper);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit}
+.lx-notes .nh button:hover{border-color:var(--accent);color:var(--accent)}
+.lx-notes textarea{flex:1;border:0;outline:0;resize:none;background:transparent;color:var(--ink);
+  font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:13.5px;line-height:1.8;padding:16px 18px}
+.lx-notes .nf{padding:8px 18px;border-top:1px solid var(--line);font-size:11px;color:var(--ink-faint);display:flex;justify-content:space-between}
+
+/* ---------- 見出しのブックマーク☆ ---------- */
+.lx-star{cursor:pointer;background:none;border:0;color:var(--ink-faint);font-size:18px;line-height:1;margin-left:10px;
+  vertical-align:middle;opacity:.5;transition:.15s}
+.lx-star:hover{opacity:1;color:var(--amber);transform:scale(1.15)}
+.lx-star.on{opacity:1;color:var(--amber)}
+.reading h2{scroll-margin-top:80px}
+
+/* オーバーレイ（メモ開時・モバイル） */
+.lx-scrim{position:fixed;inset:0;background:rgba(10,10,14,.4);z-index:139;display:none}
+.lx-scrim.show{display:block}
+
+/* 学習モードOFF：メディア系を隠す */
+html[data-mode="off"] .lx-launch,
+html[data-mode="off"] .lx-mini,
+html[data-mode="off"] .lx-vid,
+html[data-mode="off"] .lx-star{display:none !important}
+
+@media (max-width:520px){
+  .lx-mini,.lx-vid{right:8px;left:8px;width:auto}
+  .lx-vid.audio-open{bottom:200px}
+}

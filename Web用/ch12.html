@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第12章 AIの未来｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第12章 AIの未来</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">12</span><span>展望</span></div>
+          <h1 class="ch-title">AIの未来（2026〜2030）</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            現在の技術動向をもとに、<b>AIエージェントの進化・AGI・AIネイティブ企業・ロボティクス融合・働き方の変化</b>という5つの方向性を整理し、2030年頃の社会と自分のキャリアをイメージできるようになる。
+          </div>
+        </div>
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AIエージェントの進化</a></li>
+            <li><a href="#s2">AGI（汎用人工知能）とは</a></li>
+            <li><a href="#s3">AIネイティブ企業</a></li>
+            <li><a href="#s4">ロボティクスとの融合</a></li>
+            <li><a href="#s5">私たちの働き方はどう変わるのか</a></li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>未来予測の前提</div>
+          <p>未来を正確に予測することは誰にもできない。本章は現在の技術動向と各社の研究開発をもとに、<b>実現の可能性が高い方向性</b>を整理したもの。普及速度や形は業界・企業によって異なる。</p>
+        </div>
+
+        <!-- 12-1 -->
+        <h2 id="s1"><span class="sec">12-1</span>AIエージェントの進化</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIの中心は「質問に答える生成AI」から「仕事を実行するAIエージェント」へ移り、今後さらに自律化が進む。</span>
+        </div>
+        <div class="figure">
+          <div class="timeline">
+            <div class="ev"><span class="yr">2022〜24</span><p><b>第1世代：回答するAI</b>　ChatGPT・Claude・Gemini。質問に答え、文章作成や要約を担う</p></div>
+            <div class="ev"><span class="yr">2025〜26</span><p><b>第2世代：実行するAI</b>　目標→計画→ツール利用→実行。メール送信・資料作成・Web検索・予定登録まで進める</p></div>
+            <div class="ev"><span class="yr">2026〜28</span><p><b>第3世代：協調するAI（予測）</b>　複数AIが役割分担するマルチエージェントが一般化</p></div>
+            <div class="ev"><span class="yr">2028〜30</span><p><b>第4世代：自律型AI（予測）</b>　状況を理解し、必要な仕事を自ら提案・実行。重要な判断は人間が承認</p></div>
+          </div>
+          <div class="figure-cap">図 12-1　AIエージェントの世代進化（後半は予測）</div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">回答するAI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">実行するAI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">協調するAI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">自律型AI</div>
+          </div>
+          <div class="figure-cap">マルチエージェントは Supervisor の下に営業AI・技術AI・法務AI・資料作成AI・レビューAIが連携する</div>
+        </div>
+        <p>現在は「一つの依頼」を処理するのが中心。今後は<b>長期間のタスク管理・複数プロジェクトの同時進行・他AIとの協力・高度なツール連携</b>へと広がる可能性がある。</p>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>生産性向上</li><li>定型業務の自動化</li><li>24時間稼働</li><li>人は創造的な仕事に集中できる</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>AIへの過度な依存</li><li>誤った自動実行</li><li>権限管理の複雑化・セキュリティ増大</li><li>AIの判断を人間が理解しにくくなる</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは「回答するAI」から「仕事をするAI」へ進化</li>
+            <li>今後はマルチエージェントや自律型AIが発展する</li>
+            <li>自律化が進んでも人間の監督は重要な役割を担う</li>
+          </ul>
+        </div>
+
+        <!-- 12-2 -->
+        <h2 id="s2"><span class="sec">12-2</span>AGI（汎用人工知能）とは</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a4 4 0 0 0-4 4 4 4 0 0 0-2 7 4 4 0 0 0 6 3 4 4 0 0 0 6-3 4 4 0 0 0-2-7 4 4 0 0 0-4-4Z"/></svg></span>
+          <span class="txt"><small>一言でいうと</small><b>AGI（Artificial General Intelligence）</b>とは、人間のように幅広い課題へ柔軟に対応できるAIを目指す概念。</span>
+        </div>
+        <p>現在のAIは特定タスクには非常に優秀だが、新しい環境への適応や、自律的に長期間学び続ける能力にはまだ限界がある。AGIはそうした<b>分野をまたぐ柔軟性</b>を目標とする考え方だ。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">営業</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">開発</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">経営分析</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">研究</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">教育</div>
+          </div>
+          <div class="figure-cap">図 12-2　AGIが実現すれば、分野をまたいで柔軟に対応できる（イメージ）</div>
+        </div>
+        <table>
+          <tr><th></th><th>AIエージェント</th><th>AGI</th></tr>
+          <tr><td>位置づけ</td><td>業務を実行する仕組み</td><td>幅広い知能を目指す概念</td></tr>
+          <tr><td>状況</td><td>現在実用化が進んでいる</td><td>研究・議論が続いている</td></tr>
+          <tr><td>中身</td><td>LLMやツールを組み合わせる</td><td>人間並みの柔軟性を目指す</td></tr>
+        </table>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AGIは実現しているのか</div>
+          <p>現時点で「AGIが実現した」と広く合意された状況ではない。研究機関や企業によって定義も異なり、いつ実現するかを断言することはできない。</p>
+        </div>
+        <p>実現すれば<b>研究開発の高速化・医療支援・教育の個別最適化・科学的発見の支援・高度な業務の自動化</b>などが期待される一方、雇用・安全性・倫理・責任など社会全体で考えるべき課題も増える。</p>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>主なリスク</div>
+          <p>判断の透明性／安全性の確保／社会制度への影響／悪用リスク／ガバナンスの難しさ。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AGIは「人間のように幅広く対応できるAI」を目指す概念</li>
+            <li>現在の生成AIやAIエージェントとは異なる</li>
+            <li>実現時期や定義に確立した結論はない</li>
+          </ul>
+        </div>
+
+        <!-- 12-3 -->
+        <h2 id="s3"><span class="sec">12-3</span>AIネイティブ企業</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/><path d="M9 9h.01M9 13h.01M9 17h.01"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIを単なるツールとして使うのではなく、<b>「AIを前提」として業務や組織を設計する企業</b>。</span>
+        </div>
+        <p>インターネット普及は「インターネット企業」を、クラウド普及は「クラウドネイティブ企業」を生んだ。次に注目されるのがAIネイティブ企業だ。従来は人間中心で業務を設計し一部だけAIを導入したが、AIネイティブ企業は最初から<b>AIと人間の協力</b>を前提に業務を設計する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">従来<small>人 → 業務 → 必要ならAI</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">AIネイティブ<small>AI（定型業務）→ 人（判断）→ 価値創造</small></div>
+          </div>
+          <div class="figure-cap">図 12-3　AIが標準業務を担当し、人間はより高度な仕事へ集中する</div>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="m8 22 4-4 4 4M8 9h8M8 13h5"/></svg></div><h4>業務へ組込み</h4><p>議事録・社内検索・提案資料・コードレビュー・品質分析をAIが支援</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><h4>データ活用文化</h4><p>AIはデータがなければ機能しない。データ整備とナレッジ共有を重視</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0M14 20a5 5 0 0 1 7-3"/></svg></div><h4>明確な役割分担</h4><p>AIは情報収集・分析・文書作成、人間は意思決定・顧客対応・倫理判断</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg></div><h4>継続的改善</h4><p>導入して終わりではなく、ログやKPIをもとに改善を続ける</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>これから求められる人材</div>
+          <p>「AIを使う人」だけでなく「AIと一緒に仕事を設計できる人」が必要に。<b>AIコンサルタント・AIプロダクトマネージャー・AIエージェント設計者・AIガバナンス担当・DX推進担当</b>などの役割が重要になる。</p>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>生産性向上・ナレッジ活用</li><li>業務品質の均一化</li><li>迅速な意思決定支援</li><li>新しいサービス創出</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>課題・リスク</h4>
+            <ul><li>AIリテラシー教育が必要</li><li>セキュリティ・ガバナンス整備が不可欠</li><li>過度な依存を避ける</li><li>業務プロセス全体の見直し</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIネイティブ企業はAIを前提に業務を設計する企業</li>
+            <li>AIと人間の役割分担が明確になる</li>
+            <li>技術だけでなく組織・文化・教育も重要</li>
+          </ul>
+        </div>
+
+        <!-- 12-4 -->
+        <h2 id="s4"><span class="sec">12-4</span>ロボティクスとの融合</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small><b>AI（頭脳）</b>と<b>ロボット（身体）</b>が融合し、現実世界の仕事も自動化が進む。ロボティクスはロボットを設計・制御・活用する技術分野。</span>
+        </div>
+        <p>これまでのAIは文章を書く・会話する・検索するなど、主にパソコンの中で情報を処理してきた。一方ロボットは物を持つ・運ぶ・歩く・組み立てるなど現実世界で働く。両者が結びつく。</p>
+        <table>
+          <tr><th></th><th>AI</th><th>ロボット</th></tr>
+          <tr><td>役割</td><td>考える・判断する</td><td>動く・作業する</td></tr>
+          <tr><td>対象</td><td>情報処理</td><td>現実世界を操作</td></tr>
+          <tr><td>形態</td><td>ソフトウェア（頭脳）</td><td>ハードウェア（身体）</td></tr>
+        </table>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">カメラ／画像認識</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">LLM／Planner</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">経路計画</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">モーター制御・動作</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">センサーで結果確認</div>
+          </div>
+          <div class="figure-cap">図 12-4　AIエージェントの考え方がそのままロボットにも応用される</div>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 12h.01M15 12h.01"/></svg></div><h4>製造業</h4><p>AIが品質検査・異常検知・作業計画、ロボットが組み立てを実行</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="11" rx="1"/><path d="M3 12h18M9 8V5h6v3"/></svg></div><h4>物流</h4><p>AIが在庫を分析、ロボットが商品を搬送・梱包・発送</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v16M4 12h16" /><circle cx="12" cy="12" r="9"/></svg></div><h4>医療</h4><p>AIが画像診断を支援、ロボットが手術支援。最終責任は医師</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg></div><h4>サービス業・家庭</h4><p>ホテルの案内・荷物運搬、家庭での掃除・見守り・家事支援</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>期待される分野</div>
+          <p>製造・建設・医療・介護・農業・物流・小売・災害対応・宇宙開発。<b>人手不足が深刻な分野</b>ほど活用が進む。</p>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>危険作業を代替できる</li><li>24時間稼働できる</li><li>人手不足を補える</li><li>作業品質を均一化できる</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>初期導入コストが高い</li><li>誤動作による事故の可能性</li><li>セキュリティ・保守が必要</li><li>最終責任は人間が負う</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは「頭脳」、ロボットは「身体」</li>
+            <li>融合により現実世界の仕事も自動化が進む</li>
+            <li>安全性・責任・セキュリティがさらに重要になる</li>
+          </ul>
+        </div>
+
+        <!-- 12-5 -->
+        <h2 id="s5"><span class="sec">12-5</span>私たちの働き方はどう変わるのか</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M21 5 12 14l-3-3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>仕事そのものがなくなるというより、<b>仕事の内容が「作業」から「判断」へ変わる</b>。</span>
+        </div>
+        <p>パソコン・インターネット・スマートフォンがそうだったように、AIも働き方を変える技術。人間は<b>判断・創造・コミュニケーション・戦略立案・顧客対応</b>など付加価値の高い仕事へ時間を使えるようになる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">人が作業</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">人がAIへ指示 → AIが作業 → 人が確認・判断 → 成果</div>
+          </div>
+          <div class="figure-cap">図 12-5　働き方の基本フローが「作業」から「指示・確認」へ移る</div>
+        </div>
+        <table>
+          <tr><th>職種</th><th>現在</th><th>今後</th></tr>
+          <tr><td>営業</td><td>資料作成→商談</td><td>AIが資料作成、担当は商談に集中</td></tr>
+          <tr><td>ソフトウェア開発</td><td>設計→実装→テスト</td><td>AIがコード生成、設計・レビューの比重が上がる</td></tr>
+          <tr><td>品質保証（QA）</td><td>テスト作成→実施→分析</td><td>AIが生成・自動実行、担当は品質設計・改善へ</td></tr>
+          <tr><td>コンサルティング</td><td>調査・資料作成に時間</td><td>課題整理・意思決定支援に時間を使える</td></tr>
+        </table>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>2030年頃の一日（シナリオ）</div>
+          <p>朝にAIが夜間業務を報告→人が優先順位を決定→AIが資料作成・分析→人が顧客対応→AIが議事録・タスク整理→AIが翌日の準備。これは一つのシナリオで、普及速度や形は業界・企業により異なる。</p>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>AI時代に求められるスキル</h4>
+            <ul><li>AIリテラシー・AIとの協働力</li><li>問題発見力・課題解決力</li><li>論理的思考・データ活用力</li><li>業務設計力・コミュニケーション</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>注意すべきリスク</h4>
+            <ul><li>AIリテラシー格差</li><li>一部業務の変化・再設計</li><li>AIへの過度な依存</li><li>継続的な学習・法制度対応が必要</li></ul>
+          </div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AIによって生まれる仕事</div>
+          <p>AIプロダクトマネージャー／AIコンサルタント／AIエージェント設計者／AIガバナンス担当／AIセキュリティエンジニア／AIトレーナー／AI監査担当。新しい技術は新しい仕事も生む。</p>
+        </div>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>AI時代でも変わらないこと</div>
+          <p>信頼・倫理・責任・共感・リーダーシップ・創造性・最終意思決定。AIはこれらを支援できるが、完全に代替するものではない。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは仕事を完全に奪うのではなく、仕事内容を変える</li>
+            <li>人間は「判断・創造・コミュニケーション」がより重要に</li>
+            <li>AIを使いこなす力がこれからの競争力になる</li>
+          </ul>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第12章まとめ</h2>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">生成AI</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">AIエージェント</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">マルチエージェント</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">ロボティクスとの融合</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">AIネイティブ企業</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">人とAIの協働社会</div>
+          </div>
+          <div class="figure-cap">図 12-6　AIの進化イメージ</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この4つだけ覚えていれば十分</div>
+          <ul>
+            <li>AIは「回答するAI」から「仕事をするAI」へ進化している</li>
+            <li>AIとロボットの融合で、自動化は現実世界にも広がる</li>
+            <li>AGIは幅広い知能を目指す概念で、実現時期に確立した結論はない</li>
+            <li>人間は判断・責任・創造性を担い、AIと協働することが重要</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>マルチエージェント</td><td>複数のAIが役割分担して協力する仕組み</td></tr>
+          <tr><td>自律型AI</td><td>状況を理解し、必要な仕事を自ら提案・実行するAI</td></tr>
+          <tr><td>AGI</td><td>汎用人工知能。幅広い知能を目指す概念</td></tr>
+          <tr><td>AIネイティブ企業</td><td>AIを前提に業務・組織を設計する企業</td></tr>
+          <tr><td>ロボティクス</td><td>ロボットを設計・制御・活用する技術分野</td></tr>
+          <tr><td>Human in the Loop</td><td>重要な判断を人間が承認する設計</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>AIエージェントの進化の方向として正しいのは？</div>
+            <ul class="opts"><li>A. 実行するAIから回答するAIへ退化する</li><li>B. 回答→実行→協調→自律へ進化する</li><li>C. 人間の監督が完全に不要になる</li><li>D. 単一AIだけが高度化していく</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　回答するAIから実行・協調・自律へと進化。自律化が進んでも人間の監督は重要。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>AGIの説明として正しいのは？</div>
+            <ul class="opts"><li>A. すでに実現が広く合意されている</li><li>B. AIエージェントと同じ意味</li><li>C. 人間のように幅広く対応できるAIを目指す概念</li><li>D. 特定タスク専用のAI</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　AGIは幅広い柔軟性を目指す概念。実現時期や定義に確立した結論はない。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>AIネイティブ企業とは？</div>
+            <ul class="opts"><li>A. AIを一切使わない企業</li><li>B. AIを前提に業務・組織を設計する企業</li><li>C. AIを売る企業だけ</li><li>D. 人間の業務を廃止した企業</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　最初からAIと人間の協力を前提に業務を設計する企業。役割分担が明確。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>AIとロボティクスの関係として正しいのは？</div>
+            <ul class="opts"><li>A. AIが身体、ロボットが頭脳</li><li>B. AIが頭脳、ロボットが身体</li><li>C. どちらも情報処理だけを行う</li><li>D. 最終責任もロボットが負う</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　AIが考え判断する頭脳、ロボットが現実世界で動く身体。最終責任は人間。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>AI時代の働き方の変化として適切なのは？</div>
+            <ul class="opts"><li>A. 仕事が完全になくなる</li><li>B. 人間の役割は変わらない</li><li>C. 作業から判断・創造へ役割が移る</li><li>D. 新しい職種は生まれない</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　仕事内容が「作業」から「判断・創造・コミュニケーション」へ移り、新しい職種も生まれる。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>2030年の自分を想像する</h4><p>現在の仕事をもとに、2030年の働き方を整理する。</p>
+              <div class="prompt-box">現在の仕事：
+AIが担当する仕事：
+人間が担当する仕事：
+新しく必要になるスキル：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>AIネイティブ企業を設計する</h4><p>経営者になったつもりで、AIを前提とした会社を設計する。</p>
+              <div class="prompt-box">会社名：
+AIが担当する業務：
+人間が担当する業務：
+利用するAI技術：
+期待できる効果：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題3</span>未来のAIエージェントを考える</h4><p>2030年頃に実現してほしいAIエージェントを設計する。</p>
+              <div class="prompt-box">目的：
+利用する技術：
+できること：
+安全対策：
+Human in the Loop：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>AI時代の学習計画</h4><p>これから3年間で身につけたい知識・スキルを整理する（学びたい分野／理由／学習方法／目標）。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>総合演習</h4><p>第1〜12章を振り返り「2030年のAI社会と私のキャリア」をテーマにレポートを書く。AIの進化予測・自分の仕事への影響・役割分担・必要スキル・学び続けたいこと・協働の仕方を含める。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch11.html"><span class="dir">← 前の章</span><span class="t">第11章 AI導入とガバナンス</span></a>
+          <a class="next" href="ch13.html"><span class="dir">次の章 →</span><span class="t">第13章 付録</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/learn.js"></script>
+</body>
+</html>

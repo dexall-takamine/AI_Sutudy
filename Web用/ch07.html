@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第7章 エージェントを支える技術｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第7章 エージェントを支える技術</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">07</span><span>技術</span></div>
+          <h1 class="ch-title">エージェントを支える技術</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            LLM単体ではできない「Web検索・社内資料の参照・PC操作・外部連携」を可能にする周辺技術 ── <b>Browser Agent・Computer Use・MCP・RAG・Vector Database・Function Calling・マルチエージェント</b> の役割と違いを説明できるようになる。
+          </div>
+        </div>
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">Browser Agent</a></li>
+            <li><a href="#s2">Computer Use</a></li>
+            <li><a href="#s3">MCP（共通接続規格）</a></li>
+            <li><a href="#s4">RAG（検索してから回答）</a></li>
+            <li><a href="#s5">Vector Database</a></li>
+            <li><a href="#s6">Function Calling</a></li>
+            <li><a href="#s7">マルチエージェント</a></li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>なぜこの章が必要か</div>
+          <p>LLMだけなら「東京の天気を教えて」と聞いても学習済み知識で答えようとする。<b>Web検索・社内文書の参照・メール送信・予定登録</b>といった仕事は、AIの外側にある技術を組み合わせて初めて実現できる。AIエージェント開発とは「LLMを賢くすること」ではなく<b>周辺技術をどう組み合わせるか</b>である。</p>
+        </div>
+
+        <!-- 7-1 -->
+        <h2 id="s1"><span class="sec">7-1</span>Browser Agent</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>人間の代わりにWebブラウザを操作し、情報を検索・取得・整理するAIエージェント。単なる検索エンジンではなく、実際にページを開いて読む。</span>
+        </div>
+        <p>LLMはリアルタイムでインターネットを見ているわけではない。「今日発表された最新ニュースを教えて」には答えられない。そこを補うのがBrowser Agent。人間が調査するときと同じ流れで動く。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">質問</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">キーワード作成</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Web検索</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">記事を読む</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">複数サイト比較</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">回答</div>
+          </div>
+          <div class="figure-cap">図 7-1　Browser Agentの仕事の流れ</div>
+        </div>
+        <p>Web検索は結果一覧を表示するだけ。Browser Agentはさらに<b>ページを開く→スクロール→必要情報を取得→次ページ→比較→要約</b>まで行う点が違う。</p>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>得意・できること</h4>
+            <ul><li>ニュース収集・市場調査・競合分析</li><li>価格比較・求人検索</li><li>サイト巡回・フォーム入力</li><li>ページ内容の要約</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>苦手なこと</h4>
+            <ul><li>CAPTCHAの突破</li><li>ログイン必須サイト・動的コンテンツ</li><li>利用規約に反する操作</li><li>人間の意図の完全な理解</li></ul>
+          </div>
+        </div>
+        <table>
+          <tr><th></th><th>メリット</th><th>デメリット</th></tr>
+          <tr><td>Browser Agent</td><td>最新情報を取得／調査時間を短縮／複数サイト比較／定期収集を自動化</td><td>サイト変更に影響される／誤情報も取得しうる／通信速度に依存／利用規約への配慮が必要</td></tr>
+        </table>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Browser Agentはブラウザを操作するAI</li>
+            <li>Web検索より高度な処理（巡回・比較・要約）を行う</li>
+            <li>最新情報の取得が得意</li>
+          </ul>
+        </div>
+
+        <!-- 7-2 -->
+        <h2 id="s2"><span class="sec">7-2</span>Computer Use</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>人間の代わりにPC画面を見て、クリック・入力・操作を行うAI技術。ブラウザ以外のExcel・Word・SAP・Salesforceなども操作できる。</span>
+        </div>
+        <p>Computer Useは <b>GUI</b>（Graphical User Interface＝画面上のボタンやアイコンをマウスで操作する仕組み）を認識しながら、人間と同じように操作する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">画面取得</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">UI認識</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">操作判断</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">クリック・入力</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">結果確認</div>
+          </div>
+          <div class="figure-cap">図 7-2　Computer Useは画面を認識して操作する</div>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></div><h4>経理</h4><p>請求書→OCR→SAP入力→保存</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 13 4 4L19 7"/><circle cx="12" cy="12" r="9" opacity=".0"/></svg></div><h4>品質保証</h4><p>GUIテスト→画面比較→不具合検出</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>営業</h4><p>CRM更新→Teams通知</p></div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>APIがないシステムでも利用可能</li><li>人間と同じ操作ができる</li><li>レガシーシステムにも対応しやすい</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>UI変更に弱い</li><li>処理速度が比較的遅い</li><li>操作ミスが起こりうる</li><li>権限管理が重要</li></ul>
+          </div>
+        </div>
+        <table>
+          <tr><th></th><th>Browser Agent</th><th>Computer Use</th></tr>
+          <tr><td>操作対象</td><td>ブラウザ（Web中心）</td><td>PC全体（アプリ全体）</td></tr>
+          <tr><td>役割</td><td>情報取得</td><td>実際の業務操作</td></tr>
+        </table>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Computer UseはPC全体を操作する</li>
+            <li>GUIを認識して操作する</li>
+            <li>APIがないシステムでも利用できる</li>
+          </ul>
+        </div>
+
+        <!-- 7-3 -->
+        <h2 id="s3"><span class="sec">7-3</span>MCP（Model Context Protocol）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="6" height="8" rx="1"/><path d="M9 12h6"/><circle cx="18" cy="12" r="3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIと外部ツールを接続するための共通ルール（標準プロトコル）。USBが様々な機器を同じ規格で繋ぐように、MCPはAIとToolを繋ぐ共通規格。</span>
+        </div>
+        <p>AIエージェントはSlack・Gmail・GitHub・Notion・Google Drive・社内システムなど多様なToolを使う。接続方法がバラバラだと、AIを作るたびに書き換えが必要になる。MCPはこの問題を解決する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">LLM</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">MCP Client<small>AI側</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">MCP Server<small>Tool提供側</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Tool</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">サービス</div>
+          </div>
+          <div class="figure-cap">図 7-3　MCPの構成。Server側がGitHub・Slack・Database・Google Driveなどを提供する</div>
+        </div>
+        <table>
+          <tr><th></th><th>API</th><th>MCP</th></tr>
+          <tr><td>接続</td><td>個別接続</td><td>共通ルール</td></tr>
+          <tr><td>中心</td><td>システム中心</td><td>AI中心</td></tr>
+          <tr><td>対象</td><td>開発者向け</td><td>AIエージェント向け</td></tr>
+        </table>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>MCPはAI用の共通接続規格</li>
+            <li>Toolとの接続を標準化する（追加・再利用・保守が楽）</li>
+            <li>APIとは役割が異なる</li>
+          </ul>
+        </div>
+
+        <!-- 7-4 -->
+        <h2 id="s4"><span class="sec">7-4</span>RAG（Retrieval-Augmented Generation）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>必要な情報を<b>検索してから</b>、その情報を使って回答する仕組み。生成AIの弱点である「最新情報・社内情報を知らない」を補う。</span>
+        </div>
+        <p>「社内の旅費規程を教えて」と聞かれてもLLM単体では答えられない。RAGは <b>R</b>etrieval（検索）→ <b>A</b>ugmented（情報追加）→ <b>G</b>eneration（回答生成）の頭文字。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">質問</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Embedding<small>意味を数値化</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">ベクトル検索</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">関連文書を取得</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">LLMへ渡す<small>Context Injection</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">回答</div>
+          </div>
+          <div class="figure-cap">図 7-4　RAGは「検索→生成」の流れで回答する</div>
+        </div>
+        <p>文書はEmbeddingでベクトルへ変換され、意味の近い文書を検索できる。LLM単体が「推測」で答えるのに対し、RAGは社内文書を根拠にするため<b>ハルシネーション（もっともらしい嘘）を減らせる</b>。</p>
+        <table>
+          <tr><th></th><th>RAG</th><th>Fine-tuning</th></tr>
+          <tr><td>やること</td><td>文書検索</td><td>モデル再学習</td></tr>
+          <tr><td>更新</td><td>簡単</td><td>コストが高い</td></tr>
+          <tr><td>向き</td><td>最新情報・社内文書</td><td>話し方・専門性の定着</td></tr>
+        </table>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット・注意点</div>
+          <p>検索品質に依存する／文書整備が必要／ベクトルDBの管理が必要／<b>誤った文書を取得すると誤回答になる</b>。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>RAGは検索してから回答する仕組み</li>
+            <li>EmbeddingとベクトルDBを利用する</li>
+            <li>Fine-tuningとは役割が異なる</li>
+            <li>社内AIでは最も重要な技術の一つ</li>
+          </ul>
+        </div>
+
+        <!-- 7-5 -->
+        <h2 id="s5"><span class="sec">7-5</span>Vector Database（ベクトルデータベース）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>「文章の意味」を数値（ベクトル）として保存し、意味の近い情報を高速に検索するためのデータベース。RAGの検索先になる。</span>
+        </div>
+        <p>普通のDBは「完全一致」が得意（例：<code>WHERE Name = '田中'</code>）。だが質問「生成AIについて教えて」に対し、社内文書が「大規模言語モデルについて」と書かれていると、文字が一致せずヒットしない。Embeddingなら<b>意味が近いので検索できる</b>。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">犬<small>[0.18, -0.52, 0.76 …]</small></div>
+            <div class="step soft">猫<small>[0.16, -0.49, 0.81 …]</small></div>
+          </div>
+          <div class="figure-cap">図 7-5a　意味が近い語はベクトルも近くなる（Embeddingで数百〜数千次元の数値に変換）</div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">質問</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Embedding</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">類似度（Similarity）検索</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">意味が近い文書</div>
+          </div>
+          <div class="figure-cap">図 7-5b　「同じ言葉」ではなく「同じ意味」を検索する</div>
+        </div>
+        <table>
+          <tr><th></th><th>通常のデータベース</th><th>Vector Database</th></tr>
+          <tr><td>入力</td><td>名前・条件</td><td>質問→Embedding</td></tr>
+          <tr><td>検索方法</td><td>一致検索</td><td>意味検索（類似度）</td></tr>
+          <tr><td>結果</td><td>完全一致した行</td><td>意味が近い文書</td></tr>
+        </table>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>代表的なVector Database</div>
+          <p>Pinecone／Weaviate／Milvus／Chroma／Qdrant／pgvector（PostgreSQL拡張）／Azure AI Search（ベクトル検索対応）。クラウド・オンプレなど用途に応じて使い分ける。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Vector Databaseは意味検索のためのデータベース</li>
+            <li>Embeddingしたベクトルを保存する</li>
+            <li>RAGではほぼ必須の技術</li>
+          </ul>
+        </div>
+
+        <!-- 7-6 -->
+        <h2 id="s6"><span class="sec">7-6</span>Function Calling</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>LLMが「必要な機能（Function）」を選び、外部システムやプログラムを呼び出す仕組み。Functionとはプログラムの関数やAPIを指す。</span>
+        </div>
+        <p>文章を書くだけでは仕事は終わらない。「明日の予定を教えて」にはカレンダーを、「メールを送って」にはメールシステムを操作する必要がある。人間がスマホのカレンダーを開くように、AIも必要なツールを呼び出す。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">ユーザー</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">LLM<small>Functionを判断</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Function呼び出し</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">結果取得→LLM</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">回答</div>
+          </div>
+          <div class="figure-cap">図 7-6　Function Callingの流れ（例：予定確認→Google Calendar API→予定取得→回答）</div>
+        </div>
+        <p>内部的にはAPIを呼び出すことが多い。<b>Function Callingは「何を呼ぶか」を決める役割、APIは「実際に通信する仕組み」</b>。</p>
+        <table>
+          <tr><th></th><th>Function Calling</th><th>Tool Calling（第6章）</th></tr>
+          <tr><td>意味</td><td>Functionを呼び出す仕組み</td><td>ツール全体を利用する考え方</td></tr>
+          <tr><td>範囲</td><td>API実行（技術的な機能）</td><td>Browser・Python・DBなども含む（エージェント全体の行動）</td></tr>
+        </table>
+        <p>つまりFunction CallingはTool Callingを実現するための重要な技術の一つ。利用例：Gmail送信／Google Calendar登録／Slack投稿／GitHub Issue作成／Salesforce更新。</p>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Function Callingは外部機能を呼び出す仕組み</li>
+            <li>LLMが必要なFunctionを選択する</li>
+            <li>APIやToolと組み合わせて利用される</li>
+          </ul>
+        </div>
+
+        <!-- 7-7 -->
+        <h2 id="s7"><span class="sec">7-7</span>マルチエージェント（Multi-Agent）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 19a5 5 0 0 1 10 0M12 19a5 5 0 0 1 10 0"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>複数のAIエージェントが役割分担しながら協力して仕事を進める仕組み。1つのAIで進める「シングルエージェント」の対概念。</span>
+        </div>
+        <p>企業では一人で仕事を進めることは少ない。営業提案書も営業・技術・法務・マネージャーが協力する。AIにも得意・不得意があり、専門分野ごとに分けた方が高品質な結果を得られる。</p>
+        <div class="figure">
+          <div class="tree">
+            <ul>
+              <li><span class="node lv0">Supervisor（管理AI）── 仕事を振り分ける</span>
+                <ul>
+                  <li><span class="node lv1">営業Agent</span></li>
+                  <li><span class="node lv1">技術Agent</span></li>
+                  <li><span class="node lv1">法務Agent</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="figure-cap">図 7-7　マルチエージェント（Supervisor型）。結果を統合して回答する</div>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="7" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div><h4>Supervisor型</h4><p>中央の管理役が仕事を振り分ける</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7h10M7 12h10M7 17h10"/><path d="M5 5v14"/></svg></div><h4>Team型</h4><p>全員が情報を共有し協力して進める</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><h4>Specialist型</h4><p>法務・開発・営業など専門AIを必要時に呼ぶ</p></div>
+        </div>
+        <p>実務例：営業提案（営業→市場分析→技術→提案書→レビュー）／ソフトウェア開発（要件→設計→開発→テスト→レビュー）／カスタマーサポート（受付→FAQ→技術→回答）。</p>
+        <table>
+          <tr><th>項目</th><th>シングル</th><th>マルチ</th></tr>
+          <tr><td>構成</td><td>AIが1つ</td><td>AIが複数</td></tr>
+          <tr><td>管理</td><td>簡単</td><td>複雑</td></tr>
+          <tr><td>専門性</td><td>限定的</td><td>高い</td></tr>
+          <tr><td>並列処理</td><td>苦手</td><td>得意</td></tr>
+          <tr><td>コスト</td><td>比較的低い</td><td>比較的高い</td></tr>
+          <tr><td>適した用途</td><td>小規模なタスク</td><td>大規模・複雑な業務</td></tr>
+        </table>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>今後の主流へ</div>
+          <p>OpenAI・Anthropic・Google・Microsoftなど主要企業で、単一の巨大AIではなく<b>役割分担を行うマルチエージェント構成</b>の研究・開発が進む。複雑・長時間のタスクほど効果が大きい。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>マルチエージェントは複数のAIが協力して仕事を進める仕組み</li>
+            <li>Supervisor型・Team型・Specialist型が代表的</li>
+            <li>複雑な業務ほど効果が大きく、将来の重要な設計パターン</li>
+          </ul>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第7章まとめ</h2>
+        <p>AIエージェントは、LLMを中心に複数の支援技術を組み合わせて仕事をこなす。全体像は次のとおり。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">User</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">AI Agent（LLM）</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Browser Agent ／ RAG ／ Function Calling</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">MCP（共通接続）</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">社内システム・API ／ Computer Use</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">実際の仕事</div>
+          </div>
+          <div class="figure-cap">図 7-8　AIエージェントの代表的な構成</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>混同しやすい3組</div>
+          <p><b>Browser Agent と Computer Use</b>＝Webブラウザ操作 ／ PC全体の操作。<b>RAG と Vector Database</b>＝検索の仕組み ／ その検索先（セットで使う）。<b>Function Calling と MCP</b>＝「何を使うか」を決める ／ 「どう接続するか」を標準化する。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この章の要点</div>
+          <ul>
+            <li>Browser AgentはWebを、Computer UseはPCを操作する</li>
+            <li>RAGは検索して回答し、Vector Databaseが意味検索を担う</li>
+            <li>Function Callingは外部機能を呼び出す</li>
+            <li>MCPはAIとツールを接続する共通規格</li>
+            <li>マルチエージェントは複数AIで協力する</li>
+            <li>AIエージェント開発は「周辺技術をどう組み合わせるか」が重要</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>技術</th><th>役割</th></tr>
+          <tr><td>Browser Agent</td><td>外部Webを検索・操作して情報取得</td></tr>
+          <tr><td>Computer Use</td><td>GUIを認識しPC全体を操作</td></tr>
+          <tr><td>MCP</td><td>AIとツールを接続する共通規格</td></tr>
+          <tr><td>RAG</td><td>検索してから回答する仕組み</td></tr>
+          <tr><td>Vector Database</td><td>意味検索用データベース（ベクトル保存）</td></tr>
+          <tr><td>Embedding</td><td>文章を意味のベクトルへ変換</td></tr>
+          <tr><td>Function Calling</td><td>FunctionやAPIを呼び出す</td></tr>
+          <tr><td>Multi-Agent</td><td>複数AIで役割分担して協力</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>Browser AgentとComputer Useの主な違いは？</div>
+            <ul class="opts"><li>A. どちらもWebブラウザ専用</li><li>B. Browser Agentはブラウザ操作、Computer UseはPC全体（Excel・SAP等）の操作</li><li>C. Computer Useは情報取得専用</li><li>D. 違いはない</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Browser AgentはWebブラウザ中心で情報取得が得意、Computer UseはGUIを認識してPC全体を操作し実務操作が得意。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>RAGが必要な理由は？</div>
+            <ul class="opts"><li>A. LLMの計算を速くするため</li><li>B. LLMが知らない最新情報・社内情報を検索して根拠にし、ハルシネーションを減らすため</li><li>C. モデルを再学習するため</li><li>D. 画像を生成するため</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　LLM単体では社内文書や最新情報を知らない。RAGは検索した文書をLLMへ渡して回答の根拠にする。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>Vector Databaseは何を保存し、通常のDBと何が違う？</div>
+            <ul class="opts"><li>A. 文字列を保存し、完全一致で検索する</li><li>B. 文章の意味を表すベクトルを保存し、意味（類似度）で検索する</li><li>C. 画像のみを保存する</li><li>D. パスワードを保存する</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Embeddingしたベクトルを保存。通常DBの「一致検索」に対し「同じ意味」を検索できる（例：生成AI⇔大規模言語モデル）。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>EmbeddingとVector Databaseの関係は？</div>
+            <ul class="opts"><li>A. 無関係</li><li>B. Embeddingが文章をベクトル化し、そのベクトルをVector Databaseに保存・検索する</li><li>C. Vector DatabaseがEmbeddingを学習する</li><li>D. EmbeddingはDBを高速化する技術</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Embeddingで意味を数値（ベクトル）化し、それをVector Databaseが保存して類似度検索する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>Function Callingは何のために使う？</div>
+            <ul class="opts"><li>A. 文章を要約するため</li><li>B. LLMが必要な機能を選び、外部システムやAPIを呼び出して実際に仕事を実行するため</li><li>C. モデルを学習するため</li><li>D. 画面を操作するため</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　LLMが「何を呼ぶか」を判断し、メール送信・予定登録などの外部機能を呼び出す。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>MCPの役割とAPIとの違いは？</div>
+            <ul class="opts"><li>A. MCPはAIとツールを繋ぐ共通規格、APIは個別接続の通信の仕組み</li><li>B. MCPとAPIは同じもの</li><li>C. MCPはモデル学習用のデータ</li><li>D. APIはAI専用、MCPは開発者専用</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：A</b>　MCPはAIと多様なToolの接続を標準化する共通規格（AI中心）。APIは個別接続でシステム中心。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">7</span>「社内FAQを検索しSlackへ回答を投稿する」業務で使う技術は？</div>
+            <ul class="opts"><li>A. RAG・Vector Databaseのみ</li><li>B. Function Calling・MCPのみ</li><li>C. RAG＋Vector Database（検索）と Function Calling＋MCP（Slack投稿）</li><li>D. Computer Useのみ</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　FAQ検索はRAG＋Vector Database、Slackへの投稿はFunction Calling＋MCPで実現する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">8</span>マルチエージェントのメリットとして正しいものは？</div>
+            <ul class="opts"><li>A. システムが単純になる</li><li>B. コストが必ず下がる</li><li>C. 専門性が高く、並列処理でき、品質が向上する</li><li>D. デバッグが簡単になる</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　専門性・並列処理・品質向上・スケール・保守性がメリット。一方で複雑化・通信コスト・デバッグ難はデメリット。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>RAGシステムを設計する</h4><p>自社の社内FAQチャットボットを想定し、テンプレートを埋める。</p>
+              <div class="prompt-box">Goal：
+検索対象：
+Embedding：
+Vector Database：
+LLM：
+回答方法：
+期待できる効果：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>Browser Agentを設計する</h4><p>テーマ「競合企業を毎日調査するAI」。どのサイトを見るか／何を検索するか／どの情報を保存するか／更新頻度をどうするかを考える。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>Function Callingを考える</h4><p>次の依頼を実現するために必要なFunctionを挙げる（例：Calendar / Mail / Slack）。</p>
+              <div class="prompt-box">明日の会議を登録して、
+参加者へメールを送り、
+Slackへ通知してください。</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>マルチエージェントを設計する</h4><p>テーマ「営業提案書作成AI」。Supervisor→営業→市場調査→技術→資料作成→レビューなど必要なAgentと役割を書く。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>AIエージェント全体を設計する</h4><p>Goal・Planner・Memory・Browser Agent・Computer Use・RAG・Vector Database・Function Calling・MCP・Tool・Reflection・Human in the Loop、期待メリット・想定リスクを書き出す。</p></div>
+            <div class="task"><h4><span class="tn">課題6</span>（発展）仕組みを説明する</h4><p>第1〜7章の内容で「AIエージェントが仕事を完了するまで」を自分の言葉で説明する。LLM・Token・Embedding・Transformer・Inference・Planner・Memory・Browser Agent・Computer Use・RAG・Vector Database・Function Calling・MCP・Tool・Multi-Agent・Reflection・Human in the Loop をできるだけ含める。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch06.html"><span class="dir">← 前の章</span><span class="t">第6章 AIエージェントとは何か</span></a>
+          <a class="next" href="ch08.html"><span class="dir">次の章 →</span><span class="t">第8章 AIはどのように仕事をこなすのか</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/learn.js"></script>
+</body>
+</html>

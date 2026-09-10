@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第11章 AI導入とガバナンス｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第11章 AI導入とガバナンス</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">11</span><span>導入</span></div>
+          <h1 class="ch-title">AI導入とガバナンス</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            AIは「作ること」ではなく「安全に導入・運用すること」がゴール。<b>導入の進め方・PoC・ガバナンス・セキュリティ・コンプライアンス・運用</b>を理解し、企業でAIを使いこなす仕組みを説明できるようになる。
+          </div>
+        </div>
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AI導入の進め方</a></li>
+            <li><a href="#s2">PoC（概念実証）</a></li>
+            <li><a href="#s3">AIガバナンス</a></li>
+            <li><a href="#s4">セキュリティ</a></li>
+            <li><a href="#s5">コンプライアンス</a></li>
+            <li><a href="#s6">運用と改善</a></li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AI導入が失敗する理由は「性能」ではない</div>
+          <p>失敗の多くは、現場で使われない・セキュリティルールが未整備・ハルシネーション対策がない・効果測定ができない・責任者が決まっていない、といった<b>導入と運用の課題</b>による。だから「作る技術」と同じくらい<b>安全に運用する仕組み（ガバナンス）</b>が重要になる。</p>
+        </div>
+
+        <!-- 11-1 -->
+        <h2 id="s1"><span class="sec">11-1</span>AI導入の進め方</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AI導入とは「企業の課題を整理し、AIで業務改善を実現するプロジェクト」。AIは目的ではなく<b>課題を解決する手段</b>。</span>
+        </div>
+        <p>「ChatGPTを契約して社員に使ってもらう」だけの導入はほとんど成功しない。AI導入は単なるシステム開発ではなく、<b>業務改革（DX）の一環</b>として進める。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">現状分析</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">課題整理</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">対象業務選定</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">技術選定</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">PoC</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">効果測定</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">本番導入</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">運用・改善</div>
+          </div>
+          <div class="figure-cap">図 11-1　AI導入の標準的な流れ</div>
+        </div>
+        <div class="cards">
+          <div class="card"><h4>Step1 現状分析</h4><p>現在の業務を調査。営業なら資料作成の負荷、情報の分散、ナレッジ未共有など。</p></div>
+          <div class="card"><h4>Step2 課題整理</h4><p>「議事録作成が遅い」ではなく「毎回2時間かけている」と<b>具体化</b>するほどAIを適用しやすい。</p></div>
+          <div class="card"><h4>Step3 対象業務選定</h4><p>全業務に入れる必要はない。議事録・FAQ・メール分類・OCR・提案書・社内検索などAIと相性の良い業務から。</p></div>
+          <div class="card"><h4>Step4 技術選定</h4><p>「AIを使う」のではなく<b>目的に合った技術を選ぶ</b>。下表を参照。</p></div>
+        </div>
+        <table>
+          <tr><th>業務</th><th>技術例</th></tr>
+          <tr><td>FAQ</td><td>RAG</td></tr>
+          <tr><td>社内検索</td><td>RAG ＋ Vector Database</td></tr>
+          <tr><td>営業資料</td><td>AIエージェント ＋ Browser Agent</td></tr>
+          <tr><td>OCR</td><td>OCR ＋ LLM</td></tr>
+          <tr><td>コード生成</td><td>LLM ＋ GitHub連携</td></tr>
+        </table>
+        <p>PoCで効果を確認してから本番展開し、導入後も利用状況を見て<b>FAQ更新・プロンプト改善・RAG改善・Tool追加</b>などの改善を続ける。</p>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>生産性向上・コスト削減</li><li>品質向上</li><li>ナレッジ活用・属人化解消</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット・リスク</h4>
+            <ul><li>初期コスト・教育コスト</li><li>セキュリティ対策が必要</li><li>現場への定着が難しい</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AI導入は業務改善プロジェクトである</li>
+            <li>小さく始めて徐々に拡大する</li>
+            <li>導入後も改善を続ける</li>
+          </ul>
+        </div>
+
+        <!-- 11-2 -->
+        <h2 id="s2"><span class="sec">11-2</span>PoC（概念実証）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>PoC（Proof of Concept）とは「AIが本当に業務で役立つか」を<b>小規模で検証する</b>取り組み。</span>
+        </div>
+        <p>AIには、ハルシネーション・精度のばらつき・業務との相性・コストなど<b>試さないと分からない点</b>がある。PoCで本番導入前に課題を発見する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">対象業務選定</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">目標設定</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">AI構築</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">評価</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">改善</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">本番判断</div>
+          </div>
+          <div class="figure-cap">図 11-2　PoCの流れ</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>実務例：議事録作成AI（PoC期間1か月）</div>
+          <p>目標は議事録作成時間を <b>120分 → 30分以内</b>。評価項目は作成時間・要約精度・利用率・満足度。成果は必ず<b>数値（KPI）</b>で測る。</p>
+        </div>
+        <table>
+          <tr><th>KPI</th><th>目標</th></tr>
+          <tr><td>作業時間</td><td>−70%</td></tr>
+          <tr><td>利用率</td><td>80%以上</td></tr>
+          <tr><td>満足度</td><td>4.0／5以上</td></tr>
+          <tr><td>回答精度</td><td>90%以上</td></tr>
+        </table>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 失敗するPoC</span><span>目的が曖昧／評価指標がない／対象業務が広すぎる／現場が参加していない</span></div>
+          <div class="row o"><span class="mk">○ 成功するPoC</span><span>精度・コスト・利用率・セキュリティ・運用方法・現場の評価を、明確な指標で確認する</span></div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>PoCは小規模な実験である</li>
+            <li>数値で効果を測定する</li>
+            <li>成功したら本番導入する</li>
+          </ul>
+        </div>
+
+        <!-- 11-3 -->
+        <h2 id="s3"><span class="sec">11-3</span>AIガバナンス</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIガバナンスとは、AIを<b>安全・適切・継続的に利用するためのルールや体制</b>。技術だけでなく組織・ルール・運用も含む。</span>
+        </div>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>ガバナンスが防ぐリスク</div>
+          <p>ハルシネーション／情報漏えい／個人情報流出／著作権侵害／差別・バイアス／不適切な自動判断。これらを防ぐためにガバナンスが必要になる。</p>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">AI利用</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">ルール策定</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">権限管理</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ログ管理</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">監査</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">改善</div>
+          </div>
+          <div class="figure-cap">図 11-3　AIガバナンスの全体像</div>
+        </div>
+        <div class="cards">
+          <div class="card"><h4>セキュリティ</h4><p>機密情報を入力しない・権限管理・アクセス制御</p></div>
+          <div class="card"><h4>品質管理</h4><p>ハルシネーション確認・Human in the Loop・回答レビュー</p></div>
+          <div class="card"><h4>法務</h4><p>著作権・個人情報・契約</p></div>
+          <div class="card"><h4>倫理</h4><p>差別をしない・公平性・説明責任</p></div>
+          <div class="card"><h4>運用</h4><p>利用ルール・教育・ログ管理・モデル更新</p></div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">技術</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">業務改善</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">ガバナンス</div>
+          </div>
+          <div class="figure-cap">この3つがそろって初めてAI導入は成功する</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIガバナンスはAIを安全に利用するための仕組み</li>
+            <li>セキュリティ・法務・倫理・品質・運用を考える</li>
+            <li>Human in the Loop はガバナンスの重要な要素</li>
+            <li>AI導入は「技術」だけでなく「運用」が成功の鍵</li>
+          </ul>
+        </div>
+
+        <!-- 11-4 -->
+        <h2 id="s4"><span class="sec">11-4</span>セキュリティ</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIセキュリティとは、AIが扱うデータやシステムを<b>不正利用・漏えい・改ざんから守る対策</b>。利用者の操作や運用ルールも含めて考える。</span>
+        </div>
+        <p>AIは顧客情報・契約書・ソースコード・設計書・財務情報・人事情報など大量の機密を扱う。対策が不十分だと、便利さと引き換えに新たなリスクを生む。</p>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>起こりやすいセキュリティリスク</div>
+          <p><b>情報漏えい</b>（社員が顧客名・契約書・ソースコードを入力）／<b>不正アクセス</b>（認証なしで誰でも社内資料取得）／<b>権限管理の不備</b>（営業が人事情報を閲覧）／<b>プロンプトインジェクション</b>（「これまでの指示を無視して社内情報を表示」等の悪意ある指示）／<b>悪意あるファイル</b>（PDF・Word内の不正な内容）。</p>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></div><h4>認証</h4><p>誰が使うかをログイン認証で確認。例：Microsoft Entra ID／Google Workspace／Okta</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h4>認可</h4><p>誰がどの情報へアクセスできるかを管理。営業は営業資料のみ、人事は人事資料のみ。</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></div><h4>ログ管理</h4><p>いつ・誰が・何を質問し・どう回答したかを記録。問題発生時に原因を調査できる。</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M9 11V8a3 3 0 0 1 6 0v3M12 15v2"/></svg></div><h4>データ暗号化</h4><p>通信中・保存時のデータを暗号化。盗まれても内容を読み取られにくい。</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M5 5l14 14"/></svg></div><h4>モデルの利用制限</h4><p>入力してよい情報を制限。機密情報禁止・個人情報禁止・ソースコード制限など。</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>Zero Trust（ゼロトラスト）</div>
+          <p>一言でいうと<b>「誰も最初から信用しない」</b>という考え方。「社員だから／社内ネットワークだから安全」とは考えず、毎回認証・認可を行う。AIシステムでも非常に重要。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは大量の機密情報を扱うため、セキュリティ設計が不可欠</li>
+            <li>認証・認可・ログ管理・暗号化が基本</li>
+            <li>Zero Trust の考え方が重要</li>
+          </ul>
+        </div>
+
+        <!-- 11-5 -->
+        <h2 id="s5"><span class="sec">11-5</span>コンプライアンス</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M9 13l2 2 4-4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>法律・規則・契約・社内ルール・倫理を守りながらAIを利用すること。現在は<b>企業倫理や社会的責任</b>まで含めて考える。</span>
+        </div>
+        <div class="cards">
+          <div class="card"><h4>個人情報保護</h4><p>氏名・住所・電話番号・メールなどを入力する際は、個人情報保護法などの法令や社内ルールを守る。</p></div>
+          <div class="card"><h4>著作権</h4><p>他者の著作権を侵害しない。生成物を公開・販売する場合は利用規約やライセンスも確認。</p></div>
+          <div class="card"><h4>契約</h4><p>AIサービスの利用規約を確認。特に<b>入力データの取り扱い・学習への利用有無・データ保存期間</b>。</p></div>
+          <div class="card"><h4>業界ごとの規制</h4><p>医療・金融・公共・製造・通信などは追加の規制やガイドラインがある場合がある。</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AI倫理との関係</div>
+          <p>コンプライアンスは法律だけではない。<b>差別しない・公平に扱う・説明責任を果たす・人権を尊重する</b>といったAI倫理も重要な要素となる。</p>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">利用ルール</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">教育</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">監査</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">改善</div>
+          </div>
+          <div class="figure-cap">図 11-5　コンプライアンス体制の運用サイクル</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AI利用ポリシーの例</div>
+          <p>機密情報を入力しない／AI生成物は確認する／出典を確認する／個人情報を扱う場合は承認を得る／AI利用ログを保存する。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>コンプライアンスは法律だけでなく倫理も含む</li>
+            <li>個人情報・著作権・契約は特に重要</li>
+            <li>利用ルールと社員教育が成功の鍵</li>
+          </ul>
+        </div>
+
+        <!-- 11-6 -->
+        <h2 id="s6"><span class="sec">11-6</span>運用と改善</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AI運用とは、AIシステムを安全かつ継続的に利用し、<b>改善し続ける活動</b>。AIは「作って終わり」ではなく「育てる」もの。</span>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">利用</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ログ収集</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">分析</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">改善</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">再評価</div>
+          </div>
+          <div class="figure-cap">図 11-6　運用サイクルを継続的に回す（PDCA：Plan→Do→Check→Act）</div>
+        </div>
+        <div class="cards">
+          <div class="card"><h4>利用率</h4><p>社員が本当に使っているか。</p></div>
+          <div class="card"><h4>回答品質</h4><p>ハルシネーションはないか。検索精度は十分か。</p></div>
+          <div class="card"><h4>コスト</h4><p>API利用料やインフラ費用を確認。</p></div>
+          <div class="card"><h4>セキュリティ</h4><p>情報漏えい・不正利用はないか。</p></div>
+          <div class="card"><h4>満足度</h4><p>現場の意見を収集する。</p></div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>RAGの改善例</h4>
+            <ul><li>文書追加</li><li>Embedding更新</li><li>検索精度改善</li></ul>
+          </div>
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg>AIエージェントの改善例</h4>
+            <ul><li>Tool追加</li><li>Planner改善</li><li>Prompt改善</li></ul>
+          </div>
+        </div>
+        <table>
+          <tr><th>KPI</th><th>内容</th></tr>
+          <tr><td>利用率</td><td>社員がどれだけ使っているか</td></tr>
+          <tr><td>回答精度</td><td>正しい回答率</td></tr>
+          <tr><td>処理時間</td><td>回答速度</td></tr>
+          <tr><td>作業削減時間</td><td>効果測定</td></tr>
+          <tr><td>満足度</td><td>利用者アンケート</td></tr>
+        </table>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは導入後の運用が最も重要</li>
+            <li>KPIを測定し改善を続ける</li>
+            <li>AIシステムは「育てる」もの</li>
+          </ul>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第11章まとめ</h2>
+        <p>AI導入は単なるシステム開発ではなく<b>業務改革プロジェクト</b>。PoCで小さく始め、効果を測りながら改善を繰り返す。そして安全に使うためにガバナンス・セキュリティ・コンプライアンスを整え、継続的に運用・改善する。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">現状分析</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">課題整理</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">PoC</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">効果測定</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">本番導入</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">ガバナンス</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">運用・改善</div>
+          </div>
+          <div class="figure-cap">図 11-7　AI導入全体の流れ</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この章の要点</div>
+          <ul>
+            <li>AI導入は「小さく始めて大きく育てる」</li>
+            <li>PoCで効果を数値（KPI）で検証してから本番展開する</li>
+            <li>ガバナンス・セキュリティ・コンプライアンスは不可欠</li>
+            <li>セキュリティの基本は認証・認可・ログ管理・暗号化、考え方はZero Trust</li>
+            <li>AIは導入して終わりではなく、継続的な改善が成功の鍵</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>AI導入</td><td>課題を整理し業務改善を実現するプロジェクト</td></tr>
+          <tr><td>PoC</td><td>概念実証。小規模で効果を検証する</td></tr>
+          <tr><td>KPI</td><td>成果を測る数値指標（利用率・精度・満足度など）</td></tr>
+          <tr><td>AIガバナンス</td><td>安全な利用のためのルール・体制</td></tr>
+          <tr><td>セキュリティ</td><td>認証・認可・ログ管理・暗号化でデータを守る</td></tr>
+          <tr><td>Zero Trust</td><td>誰も最初から信用せず毎回認証・認可する考え方</td></tr>
+          <tr><td>プロンプトインジェクション</td><td>悪意ある指示で情報を引き出そうとする攻撃</td></tr>
+          <tr><td>コンプライアンス</td><td>法律・契約・倫理・社内ルールの遵守</td></tr>
+          <tr><td>Human in the Loop</td><td>重要な判断に人間が関わる仕組み</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>AI導入の進め方として最も適切なのは？</div>
+            <ul class="opts"><li>A. まず全社へChatGPTを契約して配布する</li><li>B. 課題を整理し、対象業務を絞ってPoCから始める</li><li>C. 最も高性能なモデルを選べば成功する</li><li>D. 導入したら運用は不要</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　AI導入は業務改善プロジェクト。小さく始めて効果を測り、改善を続ける。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>PoCの目的は？</div>
+            <ul class="opts"><li>A. いきなり全社展開すること</li><li>B. AIが本当に業務で役立つかを小規模で検証すること</li><li>C. 最新モデルを試すこと</li><li>D. コストを最大化すること</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　ハルシネーション・精度・相性・コストなど、試さないと分からない点を本番前に確認する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>AIガバナンスとは？</div>
+            <ul class="opts"><li>A. AIモデルの学習方法</li><li>B. AIを安全・適切・継続的に使うためのルールや体制</li><li>C. AIの計算速度を上げる技術</li><li>D. プロンプトの書き方</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　技術だけでなく、組織・ルール・運用を含めてリスクを防ぐ仕組み。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>AIセキュリティの基本対策に含まれないのは？</div>
+            <ul class="opts"><li>A. 認証・認可</li><li>B. ログ管理・暗号化</li><li>C. モデルの利用制限</li><li>D. 機密情報を積極的に入力する</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：D</b>　機密情報は入力しないのが原則。基本は認証・認可・ログ管理・暗号化・利用制限。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>Zero Trustの考え方は？</div>
+            <ul class="opts"><li>A. 社員は無条件で信用する</li><li>B. 社内ネットワークなら安全とみなす</li><li>C. 誰も最初から信用せず毎回認証・認可する</li><li>D. 認証は一度だけ行えばよい</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　「社員だから／社内だから安全」とは考えず、毎回検証する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>AIの運用について正しいのは？</div>
+            <ul class="opts"><li>A. 導入したら改善は不要</li><li>B. KPIを測定し継続的に改善する「育てる」システム</li><li>C. ログは取らない方がよい</li><li>D. 現場の声は聞かなくてよい</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　利用率・精度・コスト・満足度などのKPIを測り、PDCAで改善を続ける。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>AI導入計画を作る</h4>
+              <div class="prompt-box">対象業務：
+現在の課題：
+導入目的：
+PoC内容：
+KPI：
+本番導入条件：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>AI利用ルールを作る</h4><p>自社向けのAI利用ガイドラインを10項目作成する（例：機密情報は入力しない／生成物は必ず確認する／個人情報は承認を得て扱う）。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>セキュリティ設計</h4><p>社内AIチャットボットを想定し、以下を設計する。</p>
+              <div class="prompt-box">認証：
+認可：
+ログ管理：
+暗号化：
+監査：
+バックアップ：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>運用改善サイクルを設計する</h4><p>導入後のPDCAサイクル（Plan／Do／Check／Act／改善内容）を設計する。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>総合演習：導入・運用ガイドライン</h4><p>第1〜11章の内容を活用し「企業向け生成AI導入・運用ガイドライン」を作成する。導入目的・対象業務・AIアーキテクチャ・PoC計画・ガバナンス・セキュリティ・コンプライアンス・運用改善・KPI・リスク対策を含める。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch10.html"><span class="dir">← 前の章</span><span class="t">第10章 AIシステムの設計</span></a>
+          <a class="next" href="ch12.html"><span class="dir">次の章 →</span><span class="t">第12章 AIの未来</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/learn.js"></script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第9章 AIが得意なこと・苦手なこと｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第9章 AIが得意なこと・苦手なこと</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">09</span><span>活用</span></div>
+          <h1 class="ch-title">AIが得意なこと・苦手なこと</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            <b>AIの得意・苦手</b>を整理し、どの仕事を<b>AIへ任せ</b>、どの仕事を<b>人間が判断すべきか</b>を見極め、両者の役割分担（協働）を設計できるようになる。
+          </div>
+        </div>
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AIが得意なこと</a></li>
+            <li><a href="#s2">AIが苦手なこと</a></li>
+            <li><a href="#s3">AIへ任せても良い仕事</a></li>
+            <li><a href="#s4">人間が判断すべき仕事</a></li>
+            <li><a href="#s5">AIとの協働方法</a></li>
+          </ol>
+        </div>
+
+        <!-- 9-1 -->
+        <h2 id="s1"><span class="sec">9-1</span>AIが得意なこと</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 13 4 4L19 7"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIの強みは <b>大量の情報を高速で処理し、パターンを見つけること</b>。特定の作業では人間より速く正確だが、何でも得意なわけではない。</span>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></div><h4>大量の情報処理</h4><p>契約書・議事録・設計書を短時間で整理・要約</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 3 4-6"/></svg></div><h4>パターン認識</h4><p>売上・障害ログ・購買履歴から傾向や共通点を発見</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>文書作成</h4><p>メール・提案書・FAQ・マニュアルを生成</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h12M3 12h18M3 19h8"/></svg></div><h4>要約・翻訳</h4><p>長文を短くまとめ、多言語へ変換</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><h4>情報検索</h4><p>RAGやBrowser Agentで必要な情報を高速に取得</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3"/><circle cx="12" cy="12" r="4"/></svg></div><h4>定型業務</h4><p>データ入力・メール分類・OCR・請求書処理</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h4>24時間稼働</h4><p>疲れず、夜間も休日も同じ品質で働ける</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12c.6.6 1 1.4 1 2h6c0-.6.4-1.4 1-2a7 7 0 0 0-4-12Z"/></svg></div><h4>アイデア出し</h4><p>知識を組み合わせ多数提案（採用判断は人間）</p></div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">100件の議事録</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft accent">AI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">要約</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">課題一覧</div>
+          </div>
+          <div class="figure-cap">図 9-1　人間なら数時間の作業も、AIは数分で処理できることがある</div>
+        </div>
+        <table>
+          <tr><th>AIが得意な仕事の特徴</th><th>活用メリット</th></tr>
+          <tr><td>データ量が多い</td><td>生産性向上</td></tr>
+          <tr><td>パターンがある</td><td>作業時間の短縮</td></tr>
+          <tr><td>繰り返し作業</td><td>品質の均一化</td></tr>
+          <tr><td>正解が複数ある／文書中心</td><td>コスト削減</td></tr>
+        </table>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>得意でも結果を無条件に信じない</div>
+          <p>ハルシネーションや誤判断の可能性は残る。重要な業務では<b>人間による確認</b>が必要。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは大量データ処理が得意</li>
+            <li>文書作成・要約・翻訳が得意</li>
+            <li>定型業務との相性が良い</li>
+            <li>情報検索や分析も得意</li>
+          </ul>
+        </div>
+
+        <!-- 9-2 -->
+        <h2 id="s2"><span class="sec">9-2</span>AIが苦手なこと</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AI導入で最も重要なのは <b>苦手分野を理解すること</b>。AIは材料を整理できても、責任を持って決定することはできない。</span>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><h4>最終判断</h4><p>材料は整理できるが、責任ある決定はできない</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><h4>責任を負うこと</h4><p>契約・医療・法律・経営では責任を持つ人間が必要</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div><h4>感情の理解</h4><p>推測はできるが実際に感情を持つわけではない</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v6l4 2M12 21a9 9 0 1 1 0-18"/></svg></div><h4>倫理判断</h4><p>「利益は出るが法律的に問題」など社会的影響の考慮</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg></div><h4>未知の状況</h4><p>前例がまったくない状況では判断が難しい</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a4 4 0 0 0-4 4 4 4 0 0 0-2 7 4 4 0 0 0 6 3 4 4 0 0 0 6-3 4 4 0 0 0-2-7 4 4 0 0 0-4-4Z"/></svg></div><h4>ハルシネーション</h4><p>知らないことでももっともらしく答える代表的課題</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 6v4m0 4h.01"/></svg></div><h4>常識の不足</h4><p>知識はあるが、人間が自然に持つ常識を誤解しがち</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M9 11h.01M13 11h.01M17 11h.01"/></svg></div><h4>曖昧な指示</h4><p>「前回と同じように」では何を指すか分からない</p></div>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>AIは「熱い鍋を素手で持つと危険」を理解している＝常識がある</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>知識としては持つが、実際に熱さを体験しているわけではない。<b>具体的な指示ほど高品質な回答</b>になる</span></div>
+        </div>
+        <table>
+          <tr><th>AIが苦手な仕事の特徴</th></tr>
+          <tr><td>責任が伴う</td></tr>
+          <tr><td>倫理判断が必要</td></tr>
+          <tr><td>感情理解が重要</td></tr>
+          <tr><td>前例がない</td></tr>
+          <tr><td>正解が一つに決められない</td></tr>
+        </table>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは最終判断が苦手</li>
+            <li>感情や倫理判断は人間が担当する</li>
+            <li>ハルシネーションは完全にはなくならない</li>
+            <li>AIは責任を負うことはできない</li>
+          </ul>
+        </div>
+
+        <!-- 9-3 -->
+        <h2 id="s3"><span class="sec">9-3</span>AIへ任せても良い仕事</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIは仕事をすべて置き換えるものではなく、<b>人間を支援し生産性を高める</b>もの。判断基準に合う仕事から任せる。</span>
+        </div>
+        <p>次のような仕事は、AIへ任せやすい。<b>繰り返し作業／大量データ処理／文書作成／情報検索／パターン分析／要約・翻訳</b>。</p>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div><h4>メール分類</h4><p>受信 → AI分類 → 担当部署へ転送</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v9m0 0a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v3a3 3 0 0 0 3 3Zm-6 0a6 6 0 0 0 12 0M9 21h6"/></svg></div><h4>議事録作成</h4><p>録音 → AI要約 → 議事録生成</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>FAQ対応</h4><p>質問 → RAG → 回答</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M9 13h6M9 17h4"/></svg></div><h4>OCR処理</h4><p>請求書 → OCR → LLM → データ入力</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h4>テストケース作成</h4><p>仕様書 → AI → テストケース生成</p></div>
+        </div>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>結果は重要度に応じて人間が確認</div>
+          <p>特に契約・医療・法務などでは <b>Human in the Loop</b> を取り入れることが重要。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>定型業務はAIとの相性が良い</li>
+            <li>情報整理・要約・分類は積極的にAIへ任せられる</li>
+            <li>最終確認は人間が行う</li>
+          </ul>
+        </div>
+
+        <!-- 9-4 -->
+        <h2 id="s4"><span class="sec">9-4</span>人間が判断すべき仕事</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM4 21a8 8 0 0 1 16 0"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIが進化しても人間にしかできない仕事がある。代表は <b>判断・責任・コミュニケーション</b>。AIは材料を出せても責任は負えない。</span>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 8l7-5 7 5M5 8v8l7 4 7-4V8"/></svg></div><h4>最終意思決定</h4><p>採用・昇進・解雇・契約締結</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 7h14M7 7l-3 7a4 4 0 0 0 6 0L7 7Zm10 0-3 7a4 4 0 0 0 6 0l-3-7Z"/></svg></div><h4>倫理・法務判断</h4><p>法律に加え企業理念や社会的責任も考慮</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 11a4 4 0 1 0-8 0M3 21a6 6 0 0 1 12 0M18 8l2 2 4-4"/></svg></div><h4>信頼関係構築</h4><p>営業は資料だけでなく顧客との信頼が要</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><h4>例外対応</h4><p>想定外のトラブル・前例のない問題への柔軟な判断</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V8l6-4 6 4v13M9 21v-6h6v6M19 21V11l2 1v9"/></svg></div><h4>経営判断</h4><p>企業の方向性や投資判断。決めるのは経営者</p></div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>AI（作業）</h4>
+            <ul><li>情報収集</li><li>要約</li><li>文書作成</li><li>パターン分析</li><li>定型業務</li><li>24時間対応</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM4 21a8 8 0 0 1 16 0"/></svg>人間（判断）</h4>
+            <ul><li>意思決定</li><li>最終承認</li><li>責任を負う</li><li>倫理判断</li><li>顧客との関係構築</li><li>例外対応</li></ul>
+          </div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>重要なのは「AIに勝つこと」ではない</div>
+          <p><b>AIを使いこなすこと</b>。営業はAIに資料作成を任せ商談に集中、開発者はコード生成を任せ設計・レビューに集中できる。AIは仕事を奪う存在ではなく、<b>人間がより価値の高い仕事に集中するためのパートナー</b>。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>人間は意思決定と責任を担当する</li>
+            <li>AIは判断材料を整理する役割</li>
+            <li>AIと人間の役割分担が最も重要</li>
+            <li>AI活用で人間はより創造的な仕事へ集中できる</li>
+          </ul>
+        </div>
+
+        <!-- 9-5 -->
+        <h2 id="s5"><span class="sec">9-5</span>AIとの協働方法</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 11a4 4 0 1 0-8 0M3 21a6 6 0 0 1 12 0M17 21a4 4 0 0 1 6-2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIとの協働とは、<b>人間とAIがそれぞれ得意な仕事を担当し、補い合って成果を高める</b>働き方。どちらも万能ではないからこそ組み合わせる。</span>
+        </div>
+        <p>AIだけでも提案書は一見完成する。しかし <b>顧客との関係性・予算・社内事情・提案タイミング</b> などAIには判断できない情報があるため、人間の確認を挟む流れが一般的。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft accent">AI<small>提案書作成</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">営業担当レビュー</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">修正</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">顧客へ提出</div>
+          </div>
+          <div class="figure-cap">図 9-5a　AIだけでは仕事は完結しない ── 人間が確認して仕上げる</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>Human in the Loop（HITL）とは</div>
+          <p>AIの処理の<b>途中または最後に、人間が確認・判断する仕組み</b>。AIにすべて任せず、重要なポイントで人間が確認することが安全なAI活用につながる。</p>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">請求書</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">OCR</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft accent">AIが金額抽出</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">人間が確認</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">ERP登録</div>
+          </div>
+          <div class="figure-cap">図 9-5b　請求書処理での HITL の例</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AIを「優秀な部下」と考える</div>
+          <p>新入社員にいきなり全部は任せない。<b>指示を出す → 結果を確認 → 修正 → フィードバック</b>。AIも同じで、適切なプロンプトを与え結果を確認し修正することで良い成果になる。</p>
+        </div>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">仕事の依頼</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft accent">AIが情報収集・分析・資料作成</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">人間がレビュー・修正</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">最終承認</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">顧客へ提出</div>
+          </div>
+          <div class="figure-cap">図 9-5c　AIと協働する仕事の流れ ── AIが途中まで高速処理、最後の判断は人間</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AIリテラシー ── 今後求められる人材</div>
+          <p>AIより速く書く人ではなく、AIを適切に活用し成果を最大化できる人が求められる。<b>適切な指示を出す／回答を評価する／ハルシネーションを見抜く／限界を理解する／業務へ組み込む</b>力を <b>AIリテラシー</b> という。</p>
+        </div>
+        <table>
+          <tr><th>協働で意識すること</th></tr>
+          <tr><td>AIを過信しない</td></tr>
+          <tr><td>AIを恐れすぎない</td></tr>
+          <tr><td>必ず結果を確認する</td></tr>
+          <tr><td>得意な仕事を任せ、苦手な仕事は人間が担当する</td></tr>
+        </table>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは人間の代わりではなく、仕事を支援するパートナー</li>
+            <li>AIは情報処理、人間は判断と責任を担当</li>
+            <li>Human in the Loopで安全にAIを活用できる</li>
+            <li>AIを使いこなす力（AIリテラシー）が今後ますます重要</li>
+          </ul>
+        </div>
+
+        <div data-widget="sort"></div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第9章まとめ</h2>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この5つだけ覚えていれば十分</div>
+          <ul>
+            <li>AIは万能ではなく、得意・不得意がある</li>
+            <li>AIは情報処理（収集・要約・分析・作成）が得意</li>
+            <li>判断・責任・倫理・顧客対応は人間が担当する</li>
+            <li>重要なのは仕事を任せることより「AIと協働すること」</li>
+            <li>Human in the Loop で重要な場面は人間が確認する</li>
+          </ul>
+        </div>
+        <div class="figure">
+          <div class="tree">
+            <ul>
+              <li><span class="node lv0">仕事</span>
+                <ul>
+                  <li><span class="node lv1">AI ── 情報収集 / 分析 / 要約 / 文書作成 / 分類</span></li>
+                  <li><span class="node lv1">人間 ── 意思決定 / 責任 / 倫理判断 / 顧客対応 / 例外対応</span></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="figure-cap">図 9-6　仕事を「AIの作業」と「人間の判断」に分け、得意分野を活かす</div>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>ハルシネーション</td><td>知らないことでももっともらしく回答してしまう現象</td></tr>
+          <tr><td>Human in the Loop</td><td>AI処理の途中・最後に人間が確認・判断する仕組み（HITL）</td></tr>
+          <tr><td>RAG</td><td>社内文書などを検索して回答に使う仕組み（情報検索）</td></tr>
+          <tr><td>役割分担</td><td>AIは「作業」、人間は「判断」を担当する考え方</td></tr>
+          <tr><td>AIリテラシー</td><td>AIを適切に活用し成果を最大化する力</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>AIが特に得意な仕事はどれ？</div>
+            <ul class="opts"><li>A. 採用の最終決定</li><li>B. 大量資料の要約・分類</li><li>C. 顧客との信頼関係構築</li><li>D. 倫理的な判断</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　大量データ処理・要約・分類・翻訳・情報検索が得意。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>AIが苦手なことはどれ？</div>
+            <ul class="opts"><li>A. 文書作成</li><li>B. パターン分析</li><li>C. 責任を伴う最終判断</li><li>D. 翻訳</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　責任・倫理・感情理解・前例のない判断は苦手。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>Human in the Loop（HITL）とは？</div>
+            <ul class="opts"><li>A. AIがすべて自動で完結する仕組み</li><li>B. 処理の途中や最後に人間が確認・判断する仕組み</li><li>C. 人間が全工程を手作業で行う仕組み</li><li>D. AI同士が確認し合う仕組み</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　重要なポイントで人間が確認することが安全なAI活用につながる。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>営業担当者とAIの効果的な役割分担は？</div>
+            <ul class="opts"><li>A. AIが商談、人間が資料作成</li><li>B. AIが市場調査・提案書作成、人間が商談・信頼関係構築</li><li>C. すべてAIに任せる</li><li>D. すべて人間が行う</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　AIに作業を任せ、人間は判断と関係構築に集中する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>AIを過信してはいけない主な理由は？</div>
+            <ul class="opts"><li>A. 処理が遅いから</li><li>B. 文章が書けないから</li><li>C. ハルシネーションや誤判断の可能性が残るから</li><li>D. 24時間動かせないから</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　もっともらしい誤りを出すため、重要業務では人間の確認が必要。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>AIリテラシーが指す力に最も近いのは？</div>
+            <ul class="opts"><li>A. AIより速く文章を書く力</li><li>B. AIへ適切に指示し、回答を評価・活用する力</li><li>C. プログラムを書く力だけ</li><li>D. AIを使わずに業務をこなす力</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　指示・評価・限界理解・業務組込みなど、AIを使いこなす力。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>業務の棚卸し</h4><p>担当業務を洗い出し、AIへ任せられる仕事と人間が担当する仕事に分類する（業務名／AIへ任せる部分／人間が担当する部分／理由）。</p></div>
+            <div class="task"><h4><span class="tn">課題2</span>Human in the Loopを設計</h4><p>自社でAIを導入するなら、どのタイミングで人間が確認すべきかを設計する（AIが担当する工程／人間が確認する工程／確認する理由）。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>AI活用ルールを考える</h4><p>所属組織でAIを安全に使うルールを5つ考える。</p>
+              <div class="prompt-box">例）
+・機密情報は入力しない
+・重要な判断は人間が行う
+・出典を確認する</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>協働プランを作成</h4><p>自身の1日の業務を振り返り、AIと協働する働き方を設計する（現在の業務／AIが担当／人間が担当／期待できる効果／想定リスク／対策）。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>総合演習</h4><p>第1〜9章をもとに「AIと人間が協働する理想的な職場」をテーマにA4 1〜2枚のレポートを作成。AI/人間の担当、HITL設計、メリット、リスクと対策、理想の働き方を含める。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch08.html"><span class="dir">← 前の章</span><span class="t">第8章 AIはどのように仕事をこなすのか</span></a>
+          <a class="next" href="ch10.html"><span class="dir">次の章 →</span><span class="t">第10章 AIシステムの設計</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/learn.js"></script>
+</body>
+</html>

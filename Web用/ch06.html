@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第6章 AIエージェントとは何か｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/learn.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第6章 AIエージェントとは何か</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">06</span><span>エージェント</span></div>
+          <h1 class="ch-title">AIエージェントとは何か</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            AIエージェントを<b>「仕事をするAI」</b>として理解する。生成AIとの違い、構成要素（<b>Planner・Memory・Tool Calling・Reflection</b>）、<b>Workflow型</b>と<b>Autonomous型</b>の使い分けを説明できるようになる。
+          </div>
+        </div>
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AIエージェントとは</a></li>
+            <li><a href="#s2">生成AIとの違い</a></li>
+            <li><a href="#s3">AIエージェントの構成要素</a></li>
+            <li><a href="#s4">Planner（計画）</a></li>
+            <li><a href="#s5">Memory（記憶）</a></li>
+            <li><a href="#s6">Tool Calling（ツール呼び出し）</a></li>
+            <li><a href="#s7">Reflection（自己評価）</a></li>
+            <li><a href="#s8">Workflow Agent</a></li>
+            <li><a href="#s9">Autonomous Agent</a></li>
+          </ol>
+        </div>
+
+        <!-- 6-1 -->
+        <h2 id="s1"><span class="sec">6-1</span>AIエージェントとは</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIエージェントとは、<b>目標を達成するために自ら考え、情報を集め、ツールを使って仕事を進めるAIシステム</b>。生成AIが「回答するAI」なら、エージェントは「仕事をするAI」。</span>
+        </div>
+        <p>たとえば「営業資料を作って」と頼むと、人間は市場調査・顧客情報確認・資料作成・メール送信まで行う。生成AIは資料を<b>書く</b>ことはできても、PowerPointを保存したりメールを送ったりはできない。その一連の仕事を自律的に進めるのがAIエージェントである。OpenAI・Anthropic・Google・Microsoftなど主要各社が「次のコンピューティングの中心になる」と位置づけている。</p>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AIエージェントは「社員」に近い</div>
+          <p>新入社員は知識だけでは仕事にならず、PC・メール・社内システム・ファイルサーバーを使って仕事をする。エージェントも同じで、<b>LLMを頭脳とし、さまざまなツールを使いながら</b>仕事を進める。</p>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal<small>目標</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">Planning<small>計画</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">検索・Tool</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">実行・確認</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">完了</div>
+          </div>
+          <div class="figure-cap">図 6-1　仕事を受け取って完了まで自律的に進める</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIエージェントは「仕事をするAI」</li>
+            <li>目標達成まで自律的に行動する</li>
+            <li>LLMは頭脳、エージェントは仕事全体を担当する</li>
+          </ul>
+        </div>
+
+        <!-- 6-2 -->
+        <h2 id="s2"><span class="sec">6-2</span>生成AIとの違い</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>生成AIは「作るAI」、AIエージェントは「仕事をするAI」。エージェントは生成AIを<b>頭脳として利用しながら</b>、計画・検索・実行までを担う。</span>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v12H8l-4 4z"/></svg>生成AI（作る）</h4>
+            <ul><li>役割は「生成」</li><li>質問 → 回答で完結</li><li>文章・画像・音声を作る</li><li>保存・送信・登録はできない</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4"/></svg>AIエージェント（仕事をする）</h4>
+            <ul><li>役割は「業務実行」</li><li>計画 → 検索 → ツール → 実行 → 確認</li><li>顧客情報取得・承認依頼・送信まで</li><li>LLMを頭脳として利用する</li></ul>
+          </div>
+        </div>
+        <p>※ここでの「○／×」は機能の優劣ではなく役割の違いを示す。</p>
+        <table>
+          <tr><th>項目</th><th>生成AI</th><th>AIエージェント</th></tr>
+          <tr><td>主な役割</td><td>コンテンツ生成</td><td>業務実行</td></tr>
+          <tr><td>回答</td><td>○</td><td>○</td></tr>
+          <tr><td>計画</td><td>×</td><td>○</td></tr>
+          <tr><td>検索</td><td>一部対応</td><td>○</td></tr>
+          <tr><td>Tool利用</td><td>限定的</td><td>○</td></tr>
+          <tr><td>実行</td><td>×</td><td>○</td></tr>
+          <tr><td>自律性</td><td>低い</td><td>高い</td></tr>
+        </table>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">営業メールを書いて</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">顧客情報取得</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">商談履歴確認</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">メール作成</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">上司承認依頼</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">送信</div>
+          </div>
+          <div class="figure-cap">図 6-2　生成AIは「メール作成」で止まる。エージェントは送信まで行う</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>生成AIは「作るAI」、エージェントは「仕事をするAI」</li>
+            <li>エージェントはLLMを頭脳として利用する</li>
+          </ul>
+        </div>
+
+        <!-- 6-3 -->
+        <h2 id="s3"><span class="sec">6-3</span>AIエージェントの構成要素</h2>
+        <p>AIエージェントは1つの技術ではなく、複数の仕組みを組み合わせて動く。代表的な構成要素は次の4つ。頭脳（計画・記憶）と手足（ツール）、そして見直し（自己評価）からなる。</p>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></div><h4>Planner（計画）</h4><p>目標をタスクへ分解し、何を・どの順番で行うかを決める。</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><h4>Memory（記憶）</h4><p>会話履歴や途中経過、過去の情報を保持し、続きから作業できる。</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div><h4>Tool Calling（ツール利用）</h4><p>検索・メール・カレンダーなど必要なツールを選び、実際に使う。</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div><h4>Reflection（自己評価）</h4><p>結果を確認し、期待通りでなければ計画を直して再実行する。</p></div>
+        </div>
+        <div class="figure">
+          <div class="layers">
+            <div class="layer l1">頭脳　Goal → Planning → Reasoning → Memory</div>
+            <div class="layer l2">手足　RAG → Function Calling → MCP → Tool → Action</div>
+            <div class="layer l3">見直し　Observation → Reflection → Goal達成</div>
+          </div>
+          <div class="figure-cap">図 6-3a　構成要素は「頭脳・手足・見直し」の3層に分かれる</div>
+        </div>
+        <div class="figure">
+          <div class="flow">
+            <div class="step accent">Plan<small>計画する</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Action<small>実行する</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">Reflect<small>振り返る</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div>
+            <div class="step soft">問題があれば Plan へ戻る</div>
+          </div>
+          <div class="figure-cap">図 6-3b　Plan → Action → Reflect のループを目標達成まで繰り返す</div>
+        </div>
+
+        <!-- 6-4 -->
+        <h2 id="s4"><span class="sec">6-4</span>Planner（計画）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Plannerとは、目標達成のために<b>「何を」「どの順番で」</b>行うかを決める仕組み。エージェントがチャットボットと大きく異なる点は、いきなり実行せず<b>まず計画を立てる</b>こと。</span>
+        </div>
+        <p>旅行なら「ホテル予約 → 新幹線予約 → 荷物準備 → 出発」と順番を考えるのと同じ。Plannerは目標の理解・タスク分解・優先順位・必要なツール・実行順序を考える。計画がないと思いついた順に動いてしまい効率が悪い。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">顧客分析</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">競合・市場調査</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">提案書作成</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">レビュー</div>
+          </div>
+          <div class="figure-cap">図 6-4　「営業資料作成」を最適な順番に段取りする</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>無駄な作業を減らせる</li><li>複雑な仕事に対応できる</li><li>ツール利用を最適化できる</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>計画が長いほど時間がかかる</li><li>間違った計画だと全体が失敗する</li><li>複雑すぎる計画は修正が難しい</li></ul>
+          </div>
+        </div>
+
+        <!-- 6-5 -->
+        <h2 id="s5"><span class="sec">6-5</span>Memory（記憶）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Memoryとは、AIが過去の情報や途中経過を覚えておく仕組み。記憶がないと毎回「どの資料ですか？」と聞き直すことになり、仕事が続かない。</span>
+        </div>
+        <div class="cards">
+          <div class="card"><h4>Short-term Memory</h4><p>短期記憶。いまの会話や作業内容を覚える。</p></div>
+          <div class="card"><h4>Long-term Memory</h4><p>長期記憶。担当顧客・よく使う資料・好みなどを保存する。</p></div>
+          <div class="card"><h4>Working Memory</h4><p>作業中だけ使う記憶。途中計算・検索結果・タスク一覧など。</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>MemoryとRAGの違い（混同しやすい）</div>
+          <p>Memoryは<b>過去を覚える</b>仕組み、RAGは<b>必要な情報を検索する</b>仕組み。役割が違う。</p>
+        </div>
+        <table>
+          <tr><th>観点</th><th>Memory</th><th>RAG</th></tr>
+          <tr><td>役割</td><td>過去を覚える</td><td>必要な情報を検索する</td></tr>
+          <tr><td>対象</td><td>ユーザー情報・会話履歴</td><td>社内文書・FAQ・PDF</td></tr>
+          <tr><td>利用</td><td>長期利用</td><td>必要な時だけ取得</td></tr>
+        </table>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>注意点</div>
+          <p>記憶が増えるほど管理が必要になり、古い情報を覚え続けることもある。<b>個人情報の管理</b>がとくに重要。</p>
+        </div>
+
+        <!-- 6-6 -->
+        <h2 id="s6"><span class="sec">6-6</span>Tool Calling（ツール呼び出し）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Tool Callingとは、AIが必要なツールを選び、実際に利用する仕組み。LLM単体では文章しか作れず、メール送信や検索はできないため、ツールを使う。</span>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">会議を登録して</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Planner<small>Tool選択</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Function Calling</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Calendar Tool</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">予定登録・結果確認</div>
+          </div>
+          <div class="figure-cap">図 6-6　ツール選択から実行・結果確認まで</div>
+        </div>
+        <p>利用できるツールの例：Gmail／Google Calendar／Slack／GitHub／Browser／Python／Database／OCR など。</p>
+        <table>
+          <tr><th>用語</th><th>担当すること</th></tr>
+          <tr><td>Tool Calling</td><td>「何を使うか」を決める</td></tr>
+          <tr><td>MCP</td><td>「どう接続するか」を担当する</td></tr>
+          <tr><td>RAG</td><td>情報を取得する（実行ではない）</td></tr>
+        </table>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>注意点</div>
+          <p>ツール障害の影響を受ける／権限管理が必要／誤操作の可能性がある。実際に外部システムを動かすため、慎重な設計が要る。</p>
+        </div>
+
+        <!-- 6-7 -->
+        <h2 id="s7"><span class="sec">6-7</span>Reflection（自己評価）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Reflectionとは、AIが自分の結果を確認し、必要なら改善する仕組み。人がレポートを書いたあと誤字脱字を見直すのと同じ。</span>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">資料完成</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">自己レビュー</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">修正</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">提出</div>
+          </div>
+          <div class="figure-cap">図 6-7　Reflectionを挟むことでミスが残りにくくなる</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>品質向上・ミス削減</li><li>ハルシネーション低減</li><li>自己改善できる</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>処理時間が増える</li><li>コストが増える</li><li>必ず正しく直せるとは限らない</li></ul>
+          </div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>ReflectionとHuman Review</div>
+          <p>Reflectionは<b>AI自身</b>の確認、Human Reviewは<b>人間</b>による確認。企業では両方を組み合わせて使う。Reflectionは Observation とセットで利用される。</p>
+        </div>
+
+        <!-- 6-8 -->
+        <h2 id="s8"><span class="sec">6-8</span>Workflow Agent（定型業務型）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Workflow Agentとは、あらかじめ<b>決められた手順（ワークフロー）</b>に沿って仕事を進めるエージェント。毎日同じ流れの仕事は、AIが毎回自由に考えるより手順どおりに動く方が効率的。</span>
+        </div>
+        <p>新入社員でもマニュアルがあれば仕事ができるのと同じ。問い合わせメールの分類、請求書処理、議事録保存、Slack通知などはほぼ同じ流れで処理できる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">PDF受信</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">OCR</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">金額抽出</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">会計登録</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Slack通知</div>
+          </div>
+          <div class="figure-cap">図 6-8　請求書処理ワークフロー（手順が固定されている）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>品質が安定する（ばらつきが少ない）</li><li>運用しやすく障害の原因を特定しやすい</li><li>Tool・権限を限定でき安全</li><li>不要な推論を減らしコストを抑えやすい</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>想定外の仕事が苦手</li><li>柔軟な判断が難しい</li><li>フロー変更時に設計変更が必要</li></ul>
+          </div>
+        </div>
+        <p>向いている仕事：OCR・経費精算・問い合わせ対応・メール振り分け・議事録作成・データ入力・定型レポート作成。</p>
+
+        <!-- 6-9 -->
+        <h2 id="s9"><span class="sec">6-9</span>Autonomous Agent（自律型）</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>Autonomous Agentとは、自ら考え計画を立て、必要に応じて<b>行動を変えながら</b>目標達成を目指すエージェント。「新しい市場を調査して」のように手順が決まっていない仕事に向く。</span>
+        </div>
+        <p>旅行代理店に「北海道旅行を計画して」と言うと、天気・飛行機・ホテル・予算を考えながら計画する。決まった正解はない。Autonomous Agentも同じで、途中で新しい情報が見つかれば計画を変更する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Planner・Reasoning</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">RAG・Tool</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Observation・Reflection</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Goal達成</div>
+          </div>
+          <div class="figure-cap">図 6-9　状況に応じて計画を見直しながら進める</div>
+        </div>
+        <table>
+          <tr><th>項目</th><th>Workflow Agent</th><th>Autonomous Agent</th></tr>
+          <tr><td>判断</td><td>少ない</td><td>多い</td></tr>
+          <tr><td>手順</td><td>固定</td><td>可変</td></tr>
+          <tr><td>柔軟性</td><td>低い</td><td>高い</td></tr>
+          <tr><td>コスト</td><td>低い</td><td>高い</td></tr>
+          <tr><td>品質</td><td>安定しやすい</td><td>状況による</td></tr>
+          <tr><td>得意分野</td><td>定型業務</td><td>複雑な業務</td></tr>
+        </table>
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>自律型のリスク</div>
+          <p>考える回数が増えコスト・処理時間が増える／状況で行動が変わり予測しにくい／自由度が高いほど<b>権限管理と監査（ガバナンス）</b>が重要になる。</p>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>実際の企業では両方を組み合わせる</div>
+          <p>定型部分はWorkflow、判断が必要な部分だけAutonomousに任せる。例：問い合わせ受付（Workflow）→ 複雑な分析（Autonomous）→ メール送信（Workflow）。こうしてコストと品質のバランスを取る。</p>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第6章まとめ</h2>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Planner</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Memory・RAG</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Tool Calling・Action</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Observation・Reflection</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Goal達成</div>
+          </div>
+          <div class="figure-cap">図　AIエージェント全体の流れ</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この章の要点</div>
+          <ul>
+            <li>AIエージェントは「仕事をするAI」。LLMを頭脳に使う</li>
+            <li>Plannerが仕事の流れ（段取り）を決める</li>
+            <li>Memoryが過去の情報を、Tool Callingが外部システムとの連携を担う</li>
+            <li>Reflectionが自己レビューで品質を上げる</li>
+            <li>Workflow（定型）とAutonomous（複雑）は用途で使い分ける</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>AIエージェント</td><td>目標達成まで自律的に仕事を進めるAIシステム</td></tr>
+          <tr><td>Planner</td><td>目標をタスクへ分解し順番を決める仕組み</td></tr>
+          <tr><td>Memory</td><td>過去の情報・途中経過を覚える仕組み（短期／長期／作業）</td></tr>
+          <tr><td>Tool Calling</td><td>必要なツールを選び実際に利用する仕組み</td></tr>
+          <tr><td>Reflection</td><td>AI自身が結果を確認し改善する仕組み</td></tr>
+          <tr><td>Workflow Agent</td><td>決められた手順を実行する定型業務向けエージェント</td></tr>
+          <tr><td>Autonomous Agent</td><td>自ら考え計画を変えながら進める自律型エージェント</td></tr>
+          <tr><td>Human in the Loop</td><td>要所で人間が確認・承認する仕組み</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>AIエージェントと生成AIの最も大きな違いは？</div>
+            <ul class="opts"><li>A. 学習データの量</li><li>B. 回答 だけでなく計画・ツール利用・実行まで行うか</li><li>C. 日本語対応の有無</li><li>D. 画像を作れるか</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　生成AIは「作る」で止まるが、エージェントは計画・実行まで進めて仕事を完結させる。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>Plannerの役割は？</div>
+            <ul class="opts"><li>A. 過去の会話を記憶する</li><li>B. 目標をタスクに分解し順番を決める</li><li>C. 外部ツールに接続する</li><li>D. 結果の誤字を直す</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Plannerは「何を・どの順番で」行うかを決め、目標をタスクへ分解する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>Memoryの種類の組み合わせとして正しいのは？</div>
+            <ul class="opts"><li>A. 入力・出力・推論</li><li>B. Short-term・Long-term・Working</li><li>C. RAG・MCP・Function Calling</li><li>D. Plan・Action・Reflect</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　短期・長期・作業の3種類。RAGは情報検索で役割が異なる。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>Tool Callingが必要な理由は？</div>
+            <ul class="opts"><li>A. LLMだけでは文章しか作れず、送信・検索などができないから</li><li>B. 学習を速くするため</li><li>C. 記憶を増やすため</li><li>D. 計画を不要にするため</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：A</b>　メール送信・カレンダー登録・検索などの実行はツールを通じて行う。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>Reflectionは何のための仕組み？</div>
+            <ul class="opts"><li>A. 外部システムへの接続</li><li>B. AI自身が結果を確認し必要なら改善する</li><li>C. ユーザー情報の保存</li><li>D. タスクの分解</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　自己レビューで品質を上げる。人間によるHuman Reviewとは別物。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>次のうち Workflow Agent に向く仕事は？</div>
+            <ul class="opts"><li>A. 新規事業の企画</li><li>B. 経費精算・FAQ回答などの定型業務</li><li>C. 市場調査</li><li>D. 営業戦略の立案</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　手順が固定でき再現性の高い定型業務はWorkflow向き。判断の多い仕事はAutonomous向き。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>Workflow Agentを設計する</h4><p>「請求書処理」をテーマに、テンプレートを埋めてフローを書く。</p>
+              <div class="prompt-box">Goal：
+Task1：
+Task2：
+Task3：
+利用するTool：
+Human in the Loop：
+期待できる効果：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>Autonomous Agentを設計する</h4><p>「営業提案書の作成」をテーマに、AIがどう考えながら進めるかを書く。観点：Goal・Planner・RAG・Tool・Reflection。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>自分の業務へ当てはめる</h4><p>担当業務を1つ選び、WorkflowとAutonomousのどちらが適するか考える。</p>
+              <div class="prompt-box">業務名：
+Workflow Agentが向いている理由：
+Autonomous Agentが向いている理由：
+採用する構成：
+理由：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>流れを説明する（発展）</h4><p>「AIエージェントが業務を完了するまでの流れ」を自分の言葉で説明する。LLM・Goal・Planner・Memory・RAG・Tool Calling・MCP・Reflection・Workflow Agent・Autonomous Agent・Human in the Loop をできるだけ含める。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch05.html"><span class="dir">← 前の章</span><span class="t">第5章 生成AIのメリット・デメリット・リスク</span></a>
+          <a class="next" href="ch07.html"><span class="dir">次の章 →</span><span class="t">第7章 エージェントを支える技術</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/learn.js"></script>
+</body>
+</html>
