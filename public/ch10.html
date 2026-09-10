@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第10章 AIシステムの設計｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第10章 AIシステムの設計</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">10</span><span>設計</span></div>
+          <h1 class="ch-title">AIシステムの設計</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            個別技術ではなく <b>AIシステム全体がどう設計されるのか</b> を理解する。<b>RAG・AIエージェント・MCP・マルチエージェント</b> の各アーキテクチャと、<b>AI導入の進め方</b>を説明できるようになる。
+          </div>
+        </div>
+
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AIシステムの全体像</a></li>
+            <li><a href="#s2">RAGアーキテクチャ</a></li>
+            <li><a href="#s3">AIエージェントアーキテクチャ</a></li>
+            <li><a href="#s4">MCPアーキテクチャ</a></li>
+            <li><a href="#s5">マルチエージェントアーキテクチャ</a></li>
+            <li><a href="#s6">AI導入の考え方</a></li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>この章を学ぶ理由</div>
+          <p>LLM・Transformer・RAG・Vector Database・MCP・AIエージェントなど、これまで学んだ技術は<b>単独ではほとんど使われない</b>。実務では複数を組み合わせて1つのシステムを作る。その設計知識は、AIエンジニアだけでなく<b>DX担当者・ITコンサル・PM</b>にも求められる。</p>
+        </div>
+
+        <!-- 10-1 -->
+        <h2 id="s1"><span class="sec">10-1</span>AIシステムの全体像</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIシステムとは、LLM・データ・ツール・外部システムを組み合わせて<b>業務を支援・自動化するシステム全体</b>のこと。LLMはその「頭脳」だが、頭脳だけでは仕事はできない。</span>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>ChatGPT ＝ AIシステム</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>ChatGPTなどのLLMはAIシステムの<b>一部</b>。多くの技術を組み合わせて初めて実務で使えるシステムになる</span></div>
+        </div>
+
+        <p>企業向けAIシステムは、一般的に次のような階層で構成される。</p>
+        <div class="figure">
+          <div class="layers">
+            <div class="layer l1">UI（チャット画面・Teams・Slack・Webアプリ）</div>
+            <div class="layer l2">AIエージェント<small>Goal・Planner・Memory・Reflection で仕事全体を管理</small></div>
+            <div class="layer l2">LLM / RAG / Browser Agent / Function Calling<small>生成・検索・Web調査・ツール呼び出し</small></div>
+            <div class="layer l3">Vector Database ／ MCP<small>意味検索の保存先 ／ AIとツールの共通接続規格</small></div>
+            <div class="layer l3">社内システム・API・DB（Salesforce / SAP / GitHub / Jira / Google Workspace）</div>
+          </div>
+          <div class="figure-cap">図 10-1　企業向けAIシステムの基本構成（上＝ユーザー側、下＝データ側）</div>
+        </div>
+
+        <p>「営業資料を作成してください」という依頼が来たときの処理の流れ。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">ユーザー依頼</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">AIエージェント<small>Plannerが計画</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">RAG<small>社内資料検索</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Browser<small>市場調査</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">LLM<small>提案書作成</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">PowerPoint生成 → メール送信</div>
+          </div>
+          <div class="figure-cap">図 10-2　1つの依頼に対し複数の技術が連携して動く</div>
+        </div>
+
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>システムの品質はLLMだけでは決まらない</div>
+          <p>初心者は高性能なLLMを選べばよいと思いがち。だが全体の品質は <b>RAGの検索品質・Vector Database・プロンプト設計・Tool設計・MCP・権限管理・ログ管理・セキュリティ</b> に左右される。<b>LLMはシステムの一部</b>という「全体最適」の視点が重要。</p>
+        </div>
+
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>業務自動化</li><li>最新情報・社内情報の活用</li><li>生産性向上・品質向上</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット・リスク</h4>
+            <ul><li>構成が複雑になる</li><li>開発コスト・保守対象が増える</li><li>セキュリティ設計が不可欠</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIシステムはLLMだけではない</li>
+            <li>RAG・MCP・Function Callingなどを組み合わせて構築する</li>
+            <li>設計では「全体最適」が重要</li>
+          </ul>
+        </div>
+
+        <!-- 10-2 -->
+        <h2 id="s2"><span class="sec">10-2</span>RAGアーキテクチャ</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>必要な情報を<b>検索し、その情報をLLMへ渡して回答を生成する</b>システム構成。ChatGPT単体は社内情報を知らないため、RAGで社内文書を検索して補う。企業向けAIで最も使われる構成の一つ。</span>
+        </div>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">質問<small>例：旅費規程を教えて</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Embedding<small>質問をベクトル化</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Vector Database<small>意味の近い文書を検索</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Retrieval<small>関連文書を取得</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Context Injection<small>文書をLLMへ渡す</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">LLM<small>検索結果をもとに回答</small></div>
+          </div>
+          <div class="figure-cap">図 10-3　RAGの全体構成 ── 「検索してから回答する」</div>
+        </div>
+
+        <h3>実務例</h3>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">社内規程検索<small>質問</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Vector DB</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">PDF取得</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">回答</div>
+          </div>
+          <div class="figure-cap">図 10-4　社内規程検索（FAQ・PDF・設計書・契約書などが対象）</div>
+        </div>
+
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>最新情報を利用できる</li><li>Fine-tuning不要</li><li>社内文書を活用できる</li><li>ハルシネーション低減</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>検索品質に依存する</li><li>文書整備が必要</li><li>Vector Databaseの管理が必要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>RAGは「検索してから回答する」構成</li>
+            <li>Vector Databaseとセットで利用する</li>
+          </ul>
+        </div>
+
+        <!-- 10-3 -->
+        <h2 id="s3"><span class="sec">10-3</span>AIエージェントアーキテクチャ</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>目標達成のために <b>計画・検索・実行・確認を繰り返す</b> システム構成。RAGが「検索の仕組み」なのに対し、AIエージェントは<b>仕事全体を管理</b>する。</span>
+        </div>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">Goal</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Planner<small>計画</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Reasoning ／ Memory<small>推論・記憶</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">RAG / Browser / Tool Calling<small>検索・調査・ツール実行</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Action → Observation<small>実行と観察</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Reflection<small>振り返り・修正</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">Goal達成</div>
+          </div>
+          <div class="figure-cap">図 10-5　AIエージェントの全体構成（計画 → 実行 → 観察 → 振り返りのループ）</div>
+        </div>
+
+        <h3>実務例：営業提案</h3>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">依頼</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">市場調査</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">社内資料取得</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">分析・PowerPoint</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">レビュー</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">提出</div>
+          </div>
+          <div class="figure-cap">図 10-6　営業提案をエージェントが一連の手順でこなす</div>
+        </div>
+
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>柔軟な業務対応</li><li>Toolを利用できる</li><li>自律的な判断</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>コスト増加</li><li>設計が複雑</li><li>ガバナンスが重要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIエージェントは業務全体を管理する</li>
+            <li>Planner・Memory・Reflectionが重要</li>
+          </ul>
+        </div>
+
+        <!-- 10-4 -->
+        <h2 id="s4"><span class="sec">10-4</span>MCPアーキテクチャ</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11 15.8 7M8.2 13l7.6 4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIと外部システムを<b>共通ルールで接続する</b>構成。AIエージェントは多くのツールを使うため、その接続方法を標準化するのがMCP。</span>
+        </div>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">LLM</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">MCP Client<small>AI側の接続機能</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">MCP Server<small>ツール・データを公開</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Tool<small>メール・検索・ファイル取得</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">API → システム</div>
+          </div>
+          <div class="figure-cap">図 10-7　MCPの全体構成（Client・Server・Toolで構成）</div>
+        </div>
+
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>MCP Client</h4><p>AI側の接続機能。利用可能なツールを取得し、必要に応じて呼び出す</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><h4>MCP Server</h4><p>ツールやデータをAIへ公開。GitHub / Slack / Database / Google Drive / 社内システムなど</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div><h4>Tool</h4><p>AIが利用する機能。メール送信・ファイル取得・検索・カレンダーなど</p></div>
+        </div>
+
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>APIとの違い</div>
+          <p><b>API</b>は「システム同士」をつなぐ通信手段。<b>MCP</b>は「AIとツール」をつなぐ、AI向けの共通インターフェース。</p>
+        </div>
+
+        <h3>実務例</h3>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">AI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">MCP</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">GitHub<small>Issue取得</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">要約</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Slack通知</div>
+          </div>
+          <div class="figure-cap">図 10-8　MCP経由でGitHubのIssueを要約しSlackへ通知</div>
+        </div>
+
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>ツール追加が容易</li><li>ベンダーに依存しにくい</li><li>再利用しやすい</li><li>保守性が高い</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>MCP Serverの整備が必要</li><li>権限管理が重要</li><li>認証・認可の設計が必要</li><li>ツールが増えるほど運用が複雑</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>MCPはAIとツールを接続する標準規格</li>
+            <li>MCP Client・MCP Server・Toolで構成される</li>
+            <li>システム全体の拡張性・保守性を高める重要技術</li>
+          </ul>
+        </div>
+
+        <!-- 10-5 -->
+        <h2 id="s5"><span class="sec">10-5</span>マルチエージェントアーキテクチャ</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="7" r="3"/><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M12 10v3M9.5 15 7 14M14.5 15l2.5-1"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>複数のAIエージェントが<b>専門分野ごとに役割を持ち、協力して1つの業務を完了させる</b>構成。会社で営業・技術・法務・経理が分担するのと同じ。</span>
+        </div>
+        <p>「営業提案書を作成して」という依頼一つでも、顧客情報取得・社内資料検索・市場調査・競合分析・提案作成・レビューと複数の専門知識が要る。一つのAIが全部やるより<b>役割を分けた方が品質も保守性も向上する</b>。</p>
+
+        <div class="figure">
+          <div class="tree">
+            <ul>
+              <li><span class="node lv0">User</span>
+                <ul>
+                  <li><span class="node lv1">Supervisor Agent ── 全体管理</span>
+                    <ul>
+                      <li><span class="node">Sales Agent ── 顧客分析・CRM検索</span></li>
+                      <li><span class="node">Research Agent ── Web検索・市場調査</span></li>
+                      <li><span class="node">Legal Agent ── 契約書確認・規約検索</span></li>
+                      <li><span class="node">Developer Agent ── コード生成・テスト</span></li>
+                      <li><span class="node">QA Agent ── レビュー・品質分析</span></li>
+                      <li><span class="node lv1">Report Agent ── 結果を統合 → User</span></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="figure-cap">図 10-9　Supervisorが専門Agentを束ね、結果を統合する</div>
+        </div>
+
+        <table>
+          <tr><th>役割</th><th>担当</th></tr>
+          <tr><td>Supervisor Agent</td><td>Goal管理・タスク分割・Agent選択・結果統合・品質管理（人間でいうPM）</td></tr>
+          <tr><td>Specialist Agent</td><td>専門分野だけを担当（営業・研究・法務・開発・品質など）</td></tr>
+        </table>
+
+        <h3>営業提案書作成の流れ</h3>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Supervisor</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">市場調査 / 競合分析 / 社内資料検索 Agent</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">提案書作成 → レビュー Agent</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">統合 → 提出</div>
+          </div>
+          <div class="figure-cap">図 10-10　マルチエージェントによる営業提案の流れ</div>
+        </div>
+
+        <h3>実務利用例</h3>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg></div><h4>DXコンサル</h4><p>業務分析 → 課題分析 → ROI試算 → 提案書 → レビュー</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8 16-4-4 4-4M16 8l4 4-4 4M14 4l-4 16"/></svg></div><h4>ソフト開発</h4><p>要件分析 → 設計 → Coding → Test → Review → Release</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>社内AIアシスタント</h4><p>質問 → FAQ Agent → Browser Agent → 社内検索Agent → 回答</p></div>
+        </div>
+
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>専門性が高い（1つのAIに全部覚えさせ不要）</li><li>専門Agent担当で品質向上</li><li>複数Agentで並列処理</li><li>Agent単位で保守・拡張しやすい</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>デメリット</h4>
+            <ul><li>システムが複雑になる</li><li>Agent間通信が必要</li><li>コストが高くなる</li><li>デバッグ・設計が難しい</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>マルチエージェントは役割分担するAIシステム</li>
+            <li>Supervisorが全体を管理する</li>
+            <li>複雑な業務ほど効果が高い</li>
+          </ul>
+        </div>
+
+        <!-- 10-6 -->
+        <h2 id="s6"><span class="sec">10-6</span>AI導入の考え方</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AI導入とは <b>AIで企業の課題を解決し、生産性や品質を向上させること</b>。AIを使うことではなく<b>成果を出すこと</b>が目的。AIは目的ではなく手段。</span>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>ChatGPTを導入しよう → AI導入完了</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>本当に重要なのは<b>業務改善</b>。困っている仕事 → AIで解決、の順で考える</span></div>
+        </div>
+
+        <p>必ず<b>AIからではなく業務から</b>考える。重要なのはこの順番。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">Step1 現状分析<small>時間がかかる・人手不足・ミスが多い</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Step2 課題整理<small>本当の問題を見つける</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Step3 AI適用<small>生成AI・エージェント・OCR・RAGから選ぶ</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Step4 PoC<small>いきなり本番せず小さく試す</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Step5 効果測定<small>本当に効果があったか確認</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Step6 本番導入<small>成功したら全社展開</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">Step7 継続改善<small>導入して終わりではない</small></div>
+          </div>
+          <div class="figure-cap">図 10-11　AI導入の7ステップ（業務 → 課題 → AI の順）</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><div class="v">120分</div><div class="l">導入前の議事録作成時間</div></div>
+          <div class="stat"><div class="v">20分</div><div class="l">AI導入後</div></div>
+        </div>
+        <div class="figure-cap">効果測定の例 ── 削減効果を数字で確認する</div>
+
+        <h3>失敗する例</h3>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><h4>AIありきで考える</h4><p>「ChatGPTを使いたい→何に使おう」は逆。困っている仕事から考える</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><h4>業務を理解していない</h4><p>担当者が現場を理解しないと、使われないAIになる</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><h4>Human in the Loopがない</h4><p>AIだけに任せると誤判断。重要業務では人間確認が必須</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><h4>ROIを考えていない</h4><p>導入費と削減効果を比較しないと費用対効果が見えない</p></div>
+        </div>
+
+        <div class="callout risk">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>成功のポイント</div>
+          <p>小さく始める／効果を測る／現場を巻き込む／セキュリティを考える／<b>Human in the Loop</b>を設計する／継続改善する。</p>
+        </div>
+
+        <p>ここまでの内容をまとめると、企業AIシステムは次のような流れで設計される。</p>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">User</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">AI Agent<small>Planner・Reasoning</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Browser / RAG / Function<small>Vector DB</small></div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">MCP → 社内システム</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Observation → Reflection</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step soft">Human in the Loop</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">完了</div>
+          </div>
+          <div class="figure-cap">図 10-12　AIシステム設計の全体像（人間確認を組み込む）</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AI導入は「業務改善」が目的</li>
+            <li>小さく始めて効果を測る</li>
+            <li>Human in the Loopを必ず設計する</li>
+            <li>AIシステムは継続改善が重要</li>
+          </ul>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第10章まとめ</h2>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この章の要点</div>
+          <ul>
+            <li>LLM・RAG・Vector DB・MCPなどは独立した技術ではなく、1つのAIシステムの中で連携する</li>
+            <li>RAG・MCP・AIエージェントは企業AIの中核技術</li>
+            <li>マルチエージェントは複雑な業務ほど効果を発揮する</li>
+            <li>AI導入の目的は「業務改善」であり、「AIを導入すること」ではない</li>
+            <li>業務理解・PoC・Human in the Loop・継続改善が成否を分ける</li>
+          </ul>
+        </div>
+        <h3>第10章で学んだ設計</h3>
+        <table>
+          <tr><th>設計</th><th>役割</th></tr>
+          <tr><td>AIシステム全体</td><td>システム全体の構成</td></tr>
+          <tr><td>RAG</td><td>社内知識の検索</td></tr>
+          <tr><td>AIエージェント</td><td>業務の遂行</td></tr>
+          <tr><td>MCP</td><td>ツール接続</td></tr>
+          <tr><td>マルチエージェント</td><td>役割分担</td></tr>
+          <tr><td>AI導入</td><td>業務改善</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>AIシステムについて正しいのは？</div>
+            <ul class="opts"><li>A. ChatGPTがあれば完成する</li><li>B. LLM・RAG・ツール・外部システムを組み合わせて作る</li><li>C. LLMだけで品質が決まる</li><li>D. セキュリティ設計は不要</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　LLMはあくまで一部。複数技術の「全体最適」が重要。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>RAGでVector Databaseが担う役割は？</div>
+            <ul class="opts"><li>A. 文章を生成する</li><li>B. APIを呼び出す</li><li>C. 意味の近い文書を検索する</li><li>D. ツールを公開する</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　Embeddingした文書を保存し、意味検索で関連文書を見つける。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>AIエージェントのPlannerとReflectionの担当は？</div>
+            <ul class="opts"><li>A. Plannerが振り返り、Reflectionが計画</li><li>B. Plannerが計画、Reflectionが振り返り・修正</li><li>C. どちらも文章生成</li><li>D. どちらもツール接続</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　Plannerが計画を立て、Reflectionが結果を振り返り次へ活かす。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>MCPが必要な理由は？</div>
+            <ul class="opts"><li>A. LLMを高速化するため</li><li>B. AIと多数のツールの接続方法を標準化するため</li><li>C. 文書を保存するため</li><li>D. 画像を生成するため</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　共通規格で接続を標準化し、拡張性・保守性を高める。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>マルチエージェントのメリットでないのは？</div>
+            <ul class="opts"><li>A. 専門性が高い</li><li>B. 並列処理できる</li><li>C. 保守しやすい</li><li>D. システムが単純になる</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：D</b>　むしろシステムは複雑になり、Agent間通信やデバッグの難しさが増す。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>AI導入で最初に行うべきことは？</div>
+            <ul class="opts"><li>A. 高性能なLLMを選ぶ</li><li>B. 全社へ一気に展開する</li><li>C. 業務理解・課題整理</li><li>D. ChatGPTの契約</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　AIからではなく業務から考え、課題を整理してからAIを適用する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">7</span>Human in the Loopが重要な理由は？</div>
+            <ul class="opts"><li>A. コストが下がるから</li><li>B. AIだけに任せると誤判断が起きるため、重要業務で人間確認が必要</li><li>C. 処理が速くなるから</li><li>D. 文書整備が不要になるから</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　誤判断を防ぐため、重要な業務には人間のレビュー・承認を組み込む。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>RAGシステムを設計する</h4><p>社内規程検索システムを設計する。</p>
+              <div class="prompt-box">利用者：
+検索対象：
+Embedding：
+Vector Database：
+LLM：
+期待できる効果：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>AIエージェントを設計する</h4><p>自分の業務を支援するAIエージェントを設計する。</p>
+              <div class="prompt-box">Goal：
+Planner：
+Memory：
+Tool：
+Reflection：
+Human Review：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題3</span>マルチエージェントを設計する</h4><p>営業提案システムを例に、必要なAgentを書き出す。</p>
+              <div class="prompt-box">Supervisor：
+営業Agent：
+市場調査Agent：
+RAG Agent：
+提案書Agent：
+Review Agent：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>AI導入計画を作成する</h4><p>自社でAIを導入すると仮定し、現状の課題・改善したい業務・利用技術・PoC内容・効果測定方法・Human in the Loop・本番までの流れを整理する。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>総合演習：AIシステム設計書</h4><p>第1〜10章の知識を活用し「企業向けAIシステム設計書」を作成する。業務概要／現状の課題／システム構成図／利用するAI技術／データの流れ／AIと人間の役割分担／セキュリティ・ガバナンス／導入効果／想定リスク／今後の改善計画を含める。ここまで取り組めれば、企業でAIシステムを企画・設計できる基礎レベルに到達したと言える。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch09.html"><span class="dir">← 前の章</span><span class="t">第9章 AIが得意なこと・苦手なこと</span></a>
+          <a class="next" href="ch11.html"><span class="dir">次の章 →</span><span class="t">第11章 AI導入とガバナンス</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

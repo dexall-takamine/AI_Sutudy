@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>AIの内部処理 3D体験｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <div id="stage"></div>
+
+  <div class="brandbar">
+    <div class="bt">AIの内部処理 3D体験</div>
+    <div class="bs">「このあと雨は降りますか？」── 質問が回答になるまで</div>
+  </div>
+
+  <div id="ui"></div>
+
+  <a class="backlink hud" href="../ch01.html" style="display:block;padding:8px 14px;font-size:12px;color:var(--cyan);text-decoration:none">← 教材へ戻る</a>
+</div>
+
+<!-- ライブラリ（ローカル同梱・オフライン動作） -->
+<script src="../assets/three.min.js"></script>
+<script src="../assets/gsap.min.js"></script>
+<!-- アプリ（モジュール分割） -->
+<script src="js/config.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

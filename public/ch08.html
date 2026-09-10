@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第8章 AIはどのように仕事をこなすのか｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第8章 AIはどのように仕事をこなすのか</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">08</span><span>実践</span></div>
+          <h1 class="ch-title">AIはどのように仕事をこなすのか</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            代表的な10業務を題材に、<b>AIが内部でどう処理し、エージェントならどこまで自動化できるか</b>を理解する。<b>LLM・RAG・Browser Agent・Function Calling・MCP</b> が実務でどう組み合わさるかを、自分の言葉で説明できるようになる。
+          </div>
+        </div>
+
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">メール分類</a></li>
+            <li><a href="#s2">スケジュール調整</a></li>
+            <li><a href="#s3">会議の議事録作成</a></li>
+            <li><a href="#s4">Web検索と情報収集</a></li>
+            <li><a href="#s5">営業資料作成</a></li>
+            <li><a href="#s6">問い合わせ対応</a></li>
+            <li><a href="#s7">OCRによる請求書処理</a></li>
+            <li><a href="#s8">ソフトウェア開発</a></li>
+            <li><a href="#s9">テスト設計・品質保証</a></li>
+            <li><a href="#s10">AIコンサルティング</a></li>
+          </ol>
+        </div>
+
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></span>
+          <span class="txt"><small>この章の見方</small>各業務を <b>「人間が行う場合」「AI内部の処理」「エージェントの自動化範囲」</b> の3視点で比較する。技術を個別に使うのではなく、組み合わせて一連の仕事をこなす点に注目する。</span>
+        </div>
+
+        <!-- 8-1 -->
+        <h2 id="s1"><span class="sec">8-1</span>メール分類</h2>
+        <p>企業には問い合わせ・見積依頼・障害報告・営業メール・社内連絡が毎日大量に届く。AIは件名と本文を<b>「意味」で読み取り</b>分類する。たとえば「サーバーへ接続できません」は障害問い合わせと判断できる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">人間<small>件名→本文を読む</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">内容理解</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">分類</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">担当者へ転送</div>
+          </div>
+          <div class="figure-cap">図 8-1a　人間の流れ（1日数百件だと大きな負担）</div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">メール受信</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Token化 → Embedding</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">LLMで分類</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">ラベル付与</div>
+          </div>
+          <div class="figure-cap">図 8-1b　AI内部の処理</div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">LLM分類</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">担当部署・担当者を判定</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">チケット作成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Slack通知</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">返信案作成</div>
+          </div>
+          <div class="figure-cap">図 8-1c　AIエージェントはここまで自動化（使用技術：LLM／Embedding／Function Calling／MCP／チケット管理／Slack API）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>分類ミスが減る</li><li>担当者の負担軽減・高速化</li><li>24時間対応</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>誤分類・特殊な問い合わせに弱い</li><li>個人情報を扱うため権限管理が必要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIはメールを「意味」で分類する</li>
+            <li>エージェントなら担当者への転送まで自動化できる</li>
+            <li>最終確認は人間が行うと安全</li>
+          </ul>
+        </div>
+
+        <!-- 8-2 -->
+        <h2 id="s2"><span class="sec">8-2</span>スケジュール調整</h2>
+        <p>参加者が増えるほど日程調整は複雑になり、何度もメールをやり取りする。AIは「来週30分会議を設定して」という<b>自然言語の依頼</b>を理解し、カレンダーを読んで候補日を提案する。</p>
+        <div class="figure">
+          <div class="flow h nowrap">
+            <div class="step">依頼を理解</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">参加者取得</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Google Calendar<small>空き時間検索</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">候補提示</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">承認</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">予定登録</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">招待メール送信</div>
+          </div>
+          <div class="figure-cap">図 8-2　エージェントの自動化範囲（使用技術：LLM／Calendar API／Function Calling／MCP／Gmail／Outlook）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>調整時間を短縮</li><li>ダブルブッキング防止</li><li>招待メールも自動作成</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>権限設定が必要・誤登録の可能性</li><li>社外参加者との調整は難しい場合がある</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIはカレンダーを読み取り候補日を提案できる</li>
+            <li>エージェントなら予定登録まで自動化できる</li>
+          </ul>
+        </div>
+
+        <!-- 8-3 -->
+        <h2 id="s3"><span class="sec">8-3</span>会議の議事録作成</h2>
+        <p>議事録はAIが最も得意な業務の一つで、TeamsやZoomにもAI議事録機能が搭載されている。<b>音声認識（ASR）が文字起こし</b>を、<b>LLMが要約と決定事項・ToDo抽出</b>を担当する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Teams録画</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">音声認識（ASR）<small>テキスト化</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">LLMで要約・議事録</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ToDo抽出・担当者割当</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Slack投稿／Notion保存</div>
+          </div>
+          <div class="figure-cap">図 8-3　エージェントの自動化範囲（使用技術：ASR／LLM／Function Calling／Notion API／Slack API）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>作業時間を大幅削減</li><li>記録漏れ防止</li><li>ToDo管理まで自動化</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>専門用語の誤認識・発言者識別が難しい</li><li>機密会議ではアクセス制御が重要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは議事録作成が非常に得意</li>
+            <li>要約だけでなくToDo抽出も可能</li>
+          </ul>
+        </div>
+
+        <!-- 8-4 -->
+        <h2 id="s4"><span class="sec">8-4</span>Web検索と情報収集</h2>
+        <p>市場調査や競合分析では大量のWebサイト確認が必要になる。AIエージェントは <b>Browser Agent</b> で複数サイトを巡回し、重複を除いて比較分析し、資料化までつなげる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">検索計画</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Browser Agent<small>複数サイト巡回</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">重複除去・比較分析</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">PowerPoint作成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">メール送信</div>
+          </div>
+          <div class="figure-cap">図 8-4　エージェントの自動化範囲（使用技術：Browser Agent／LLM／RAG／Function Calling／PowerPoint生成）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>情報収集時間を大幅短縮</li><li>複数サイトを比較できる</li><li>最新情報を取得できる</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>誤情報の取得・出典確認が必要</li><li>Webサイトの利用規約に注意</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>Browser Agentは情報収集の自動化に最適</li>
+            <li>エージェントなら調査からレポート作成まで実行できる</li>
+            <li>最終的な情報の信頼性確認は人間が行う</li>
+          </ul>
+        </div>
+
+        <!-- 8-5 -->
+        <h2 id="s5"><span class="sec">8-5</span>営業資料作成</h2>
+        <p>営業資料はPowerPointを作るだけに見えて、実際は情報収集・分析・資料作成を組み合わせた仕事。<b>RAGで社内の顧客情報・過去提案を参照</b>し、<b>Browser Agentで市場・競合を調査</b>するため、エージェントが最も力を発揮する。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">CRM確認<small>RAG・過去提案取得</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">市場調査・競合分析<small>Browser Agent</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">PowerPoint生成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">レビュー依頼</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">メール送信</div>
+          </div>
+          <div class="figure-cap">図 8-5　エージェントの自動化範囲（使用技術：LLM／Browser Agent／RAG／Vector Database／PowerPoint生成／Function Calling／MCP）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>作成時間を大幅短縮</li><li>過去資料を再利用できる</li><li>市場調査も同時実施・品質を均一化</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>市場情報が古い可能性・ハルシネーション</li><li>顧客情報管理が重要</li><li>提案内容の最終判断は人間が必要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>営業資料作成はエージェントとの相性が非常に良い</li>
+            <li>RAG・Browser Agent・LLMの組み合わせで高品質な提案書を作成できる</li>
+          </ul>
+        </div>
+
+        <!-- 8-6 -->
+        <h2 id="s6"><span class="sec">8-6</span>問い合わせ対応</h2>
+        <p>AIチャットボットは現在もっとも普及しているAIエージェントの一つ。<b>RAGがFAQや社内文書を検索</b>して回答を生成し、解決できない場合は人間へエスカレーションする設計が重要。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">問い合わせ</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">カテゴリ分類</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">RAGでFAQ検索</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">回答生成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">解決→送信／未解決→担当部署へ</div>
+          </div>
+          <div class="figure-cap">図 8-6　解決可否で分岐するフロー（使用技術：LLM／RAG／Vector Database／Function Calling／MCP／CRM／チケット管理）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>24時間対応・待ち時間削減</li><li>FAQ自動検索</li><li>オペレーター負荷軽減</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>FAQにない質問が苦手・ハルシネーション</li><li>個人情報保護が重要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>問い合わせ対応ではRAGが非常に重要</li>
+            <li>解決できない場合は人間へ引き継ぐ設計が重要</li>
+          </ul>
+        </div>
+
+        <!-- 8-7 -->
+        <h2 id="s7"><span class="sec">8-7</span>OCRによる請求書処理</h2>
+        <p>経理部門の請求書処理は時間がかかる作業。紙やPDFを <b>OCRで文字抽出</b> し、<b>LLMが項目を理解</b> して会計データを作る。ただし金額確認や承認は人間が行うため、OCRだけでは処理は完了しない。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">請求書（PDF）</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">OCRで文字抽出</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">LLMで項目理解<small>金額・会社名</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ERP登録</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">承認依頼・保存</div>
+          </div>
+          <div class="figure-cap">図 8-7　エージェントの自動化範囲（使用技術：OCR／LLM／Function Calling／ERP API／Computer Use／MCP）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>入力時間削減</li><li>転記ミス削減</li><li>自動登録可能</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>OCR誤認識・請求書フォーマット差異</li><li>金額確認が必要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>OCR＋LLMで請求書処理を自動化できる</li>
+            <li>金額確認は人間が行うと安全</li>
+          </ul>
+        </div>
+
+        <!-- 8-8 -->
+        <h2 id="s8"><span class="sec">8-8</span>ソフトウェア開発</h2>
+        <p>AIが最も急速に普及している分野の一つ。GitHub CopilotやChatGPTでコードを書く開発者が増えている。エージェントは <b>Issue取得から要件分析・コード生成・テスト・Pull Request作成</b> まで進められる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Issue取得</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">要件分析・設計</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">コード生成<small>既存コード参照</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ユニットテスト生成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Pull Request作成</div>
+          </div>
+          <div class="figure-cap">図 8-8　エージェントの自動化範囲（使用技術：LLM／GitHub API／MCP／Function Calling／RAG／Vector Database）</div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>実装速度向上</li><li>テストコード・ドキュメント生成</li><li>レビュー支援</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>バグ生成・セキュリティホール</li><li>ライセンス確認・コード品質確認</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは開発を支援する強力なパートナー</li>
+            <li>最終レビューは人間が行う</li>
+          </ul>
+        </div>
+
+        <!-- 8-9 -->
+        <h2 id="s9"><span class="sec">8-9</span>テスト設計・品質保証</h2>
+        <p>QAでもAIはテストケース作成やレビュー支援に活用される。エージェントは <b>RAGで過去障害を検索</b> し、テストケースを生成、<b>Playwrightで自動テスト</b> を実行して結果を分析できる。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">仕様書取得</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">RAGで過去障害検索<small>リスク分析</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">テストケース生成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Playwrightで自動テスト<small>失敗画面取得</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">原因分析・不具合票作成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Jira登録／Slack通知</div>
+          </div>
+          <div class="figure-cap">図 8-9　QA実務例（使用技術：LLM／RAG／Vector Database／Browser Agent／Computer Use／テスト自動化／Function Calling）</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>「実行するAI」から「分析するAI」へ</div>
+          <p>品質保証では <b>「テストを実行するAI」だけでなく「品質を分析し改善提案するAI」</b> が登場し始めている。</p>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>テスト設計時間短縮</li><li>テスト観点漏れ削減</li><li>自動テスト連携・品質分析支援</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>仕様誤解による誤ったテストケース</li><li>非機能テストは難しい場合がある</li><li>品質判断は人間が必要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIはテストケース作成が得意</li>
+            <li>過去障害を活用した品質分析も可能</li>
+            <li>品質保証では「AI＋人間」の組み合わせが最も効果的</li>
+          </ul>
+        </div>
+
+        <!-- 8-10 -->
+        <h2 id="s10"><span class="sec">8-10</span>AIコンサルティング</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>企業の課題を整理し、生成AIやAIエージェントを活用して業務改善を支援する仕事。<b>AI導入が目的ではなく、課題解決が目的</b>。</span>
+        </div>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>AIコンサルティング＝「ChatGPTを導入すること」</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>課題 → 原因分析 → 業務改善 → AI適用 → 効果測定 → 継続改善。AIは<b>目的ではなく手段</b></span></div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ヒアリング資料取得<small>RAG・社内ルール検索</small></div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">業務フロー分析・改善案作成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">ROI試算・提案資料作成</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">レビュー</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">顧客提出</div>
+          </div>
+          <div class="figure-cap">図 8-10　エージェントの自動化範囲（使用技術：LLM／Browser Agent／RAG／Vector Database／MCP／Function Calling／Multi-Agent／BIツール／CRM／ERP）</div>
+        </div>
+        <p>AIコンサルタントは現状調査→業務分析→課題整理→AI適用検討→PoC（試験導入）→評価→本番導入と進める。AIはこのすべてを置き換えるのではなく、<b>資料分析・市場調査・業務整理・提案資料作成</b>を大きく支援する。代表的な適用例は次のとおり。</p>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></div><h4>営業DX</h4><p>商談履歴・過去資料・市場調査から提案書を生成</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 13 4 4L19 7"/></svg></div><h4>品質保証（QA）</h4><p>仕様書・過去障害からテスト観点・テストケースを生成</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>社内問い合わせ</h4><p>散在する社内文書をEmbedding→Vector DB→RAGでAIチャット化</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></div><h4>SI・コンサル企業</h4><p>課題整理→現状分析→PoC→効果測定→本番→運用改善</p></div>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>メリット</h4>
+            <ul><li>調査時間を大幅短縮・提案品質向上</li><li>PoCを短期間で実施</li><li>社内ナレッジを活用・提案書作成を効率化</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>リスク</h4>
+            <ul><li>現場業務を理解しないと適切な提案ができない</li><li>ハルシネーションによる誤提案</li><li>ROI評価・セキュリティ・ガバナンスが必要</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIコンサルティングは「AI導入」ではなく「課題解決」が目的</li>
+            <li>AIは分析・資料作成・調査を支援できる</li>
+            <li>最終的な提案や意思決定は人間が担当する</li>
+          </ul>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第8章まとめ</h2>
+        <p>AIは単独の技術ではなく、LLM・RAG・Browser Agent・Computer Use・Function Calling・MCPを<b>組み合わせる</b>ことで実務レベルの仕事を実現する。多くの業務は次の共通フローで進む。</p>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">Goal</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Planner</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">RAG／Browser Agent</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Tool / Function Calling</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Action → Reflection</div>
+            <div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">Human Review → 完了</div>
+          </div>
+          <div class="figure-cap">図 8-11　業務に共通するエージェントのフロー（営業・開発・QA・経理・人事など）</div>
+        </div>
+        <h3>第8章で扱った業務の役割分担</h3>
+        <table>
+          <tr><th>業務</th><th>AIが得意なこと</th><th>人間が担当すること</th></tr>
+          <tr><td>メール分類</td><td>分類・優先順位付け</td><td>最終判断</td></tr>
+          <tr><td>スケジュール調整</td><td>候補日作成・予定登録</td><td>特殊な調整</td></tr>
+          <tr><td>議事録作成</td><td>文字起こし・要約</td><td>内容確認</td></tr>
+          <tr><td>Web検索</td><td>情報収集・比較</td><td>信頼性確認</td></tr>
+          <tr><td>営業資料</td><td>下書き・分析</td><td>提案判断</td></tr>
+          <tr><td>問い合わせ対応</td><td>FAQ回答</td><td>難しい相談対応</td></tr>
+          <tr><td>OCR処理</td><td>データ抽出・入力</td><td>金額確認・承認</td></tr>
+          <tr><td>ソフトウェア開発</td><td>コード生成・レビュー支援</td><td>設計・品質判断</td></tr>
+          <tr><td>テスト設計</td><td>テストケース生成</td><td>品質保証・最終判断</td></tr>
+          <tr><td>AIコンサルティング</td><td>分析・提案支援</td><td>課題整理・意思決定</td></tr>
+        </table>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>AIが得意（情報処理）</h4>
+            <ul><li>情報収集・要約・分類</li><li>文書作成・データ入力</li><li>パターン分析</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>人間が担当（判断・責任）</h4>
+            <ul><li>意思決定・最終承認</li><li>顧客との信頼関係構築</li><li>倫理・法務判断・例外対応</li></ul>
+          </div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この章の要点</div>
+          <ul>
+            <li>AIは業務の一部だけでなく、一連の流れを支援できる</li>
+            <li>エージェントは複数の技術を組み合わせて仕事を進める</li>
+            <li>AIが得意なのは「情報処理」、人間が得意なのは「判断・責任・コミュニケーション」</li>
+            <li>多くの業務は Goal→Planner→ツール→Action→Reflection→Human Review の共通フローで動く</li>
+            <li>AIが人間を置き換えるのではなく、AIと人間の協力が重要</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>Function Calling</td><td>LLMが外部ツール・APIを呼び出す仕組み</td></tr>
+          <tr><td>RAG</td><td>社内文書やFAQを検索して回答に使う仕組み</td></tr>
+          <tr><td>Browser Agent</td><td>Webを巡回して情報収集する仕組み</td></tr>
+          <tr><td>OCR</td><td>画像・PDFから文字を抽出する技術</td></tr>
+          <tr><td>ASR</td><td>音声認識（音声をテキスト化する技術）</td></tr>
+          <tr><td>Computer Use</td><td>AIが画面操作でアプリを操作する仕組み</td></tr>
+          <tr><td>Human Review</td><td>人間が最終確認・承認を行う工程</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>メール分類でAIが内部で行う処理の流れは？</div>
+            <ul class="opts"><li>A. OCR → 承認 → 保存</li><li>B. Token化 → Embedding → LLM分類 → ラベル付与</li><li>C. 音声認識 → 要約 → 投稿</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　メールを数値化（Embedding）し、LLMが意味で分類してラベルを付ける。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>スケジュール調整でFunction Callingが担う役割は？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　LLMがCalendar API（Google Calendar等）を呼び出して空き時間検索・予定登録・招待メール送信といった外部操作を実行する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>議事録作成で音声認識とLLMが担当するのは？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　音声認識（ASR）が音声を文字に起こし、LLMがそれを要約して議事録化し、決定事項やToDoを抽出する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>営業資料作成でBrowser AgentとRAGはどう使い分ける？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　RAGは社内（CRM・過去提案・顧客情報）の参照、Browser Agentは社外Webの市場調査・競合分析に使う。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>OCRだけでは請求書処理が完了しない理由は？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　OCRは文字抽出までで、項目理解（LLM）やERP登録、金額確認・承認（人間）が必要。OCR誤認識やフォーマット差異もあるため。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">6</span>ソフトウェア開発でAIが得意なことを3つ挙げると？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　コード生成・テストコード生成・ドキュメント生成（レビュー支援も可）。設計や品質判断は人間が担当。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">7</span>品質保証でAIと人間が担当するのは？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　AIはテストケース生成・自動テスト実行・品質分析、人間は品質判断・最終承認・非機能評価を担当する。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">8</span>AIコンサルティングで最も重要なのは？</div>
+            <ul class="opts"><li>A. ChatGPTを導入すること</li><li>B. 企業の課題を解決すること</li><li>C. 最新モデルを使うこと</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　AIは目的ではなく手段。課題整理から効果測定・継続改善までが本質。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">9</span>エージェントの共通フローをGoalからHuman Reviewまで説明すると？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>例</b>　Goal → Planner（計画）→ RAG／Browser Agentで情報収集 → Tool・Function Callingで実行 → Action → Reflection（自己検証）→ Human Review（人間の確認）→ 完了。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">10</span>（応用）自分の業務でAIと人間の担当を整理すると？</div>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>解答例なし</b>　業務を1つ選び、情報処理（AI）と判断・責任（人間）に分けて整理できれば理解できている。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>自分の業務を分析する</h4>
+              <p>担当業務を1つ選び、次のテンプレートを埋める。</p>
+              <div class="prompt-box">業務名：
+現状の流れ：
+AIが担当できる部分：
+人間が担当する部分：
+期待できる効果：
+想定されるリスク：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題2</span>AIエージェントを設計する</h4>
+              <p>自社で使うエージェントを設計する。</p>
+              <div class="prompt-box">Goal：
+Planner：
+Memory：
+RAG：
+Browser Agent：
+Computer Use：
+Function Calling：
+MCP：
+Tool：
+Human Review：</div>
+            </div>
+            <div class="task"><h4><span class="tn">課題3</span>営業提案AIを考える</h4><p>必要な情報／利用ツール／RAGは必要か／Browser Agentは必要か／Human in the Loopをどこで入れるか、を整理する。</p></div>
+            <div class="task"><h4><span class="tn">課題4</span>品質保証AIを考える</h4><p>テスト設計支援AIを設計する。仕様書取得・過去障害検索・テストケース生成・自動テスト・不具合分析・レビューを含める。</p></div>
+            <div class="task"><h4><span class="tn">課題5</span>総合演習：業務改善提案書</h4>
+              <p>第1〜8章の知識で「AIエージェントを活用した業務改善提案書」を作る。次の10項目を含める。</p>
+              <div class="prompt-box">① 現在の業務
+② 現在の課題
+③ AIを導入する目的
+④ 利用する技術（LLM・RAG・MCP・Function Calling・Browser Agentなど）
+⑤ AIが担当する部分
+⑥ 人間が担当する部分
+⑦ 期待できる効果
+⑧ 想定されるリスク
+⑨ セキュリティ対策
+⑩ 導入後の運用イメージ</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch07.html"><span class="dir">← 前の章</span><span class="t">第7章 エージェントを支える技術</span></a>
+          <a class="next" href="ch09.html"><span class="dir">次の章 →</span><span class="t">第9章 AIが得意なこと・苦手なこと</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

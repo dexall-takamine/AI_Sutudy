@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>はじめに｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">はじめに</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">00</span><span>ガイダンス</span></div>
+          <h1 class="ch-title">はじめに</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この本について
+            </div>
+            生成AI・LLM・AIエージェントの仕組みを<b>ゼロから理解</b>し、業務で<b>活用・設計</b>できるレベルを目指す教科書。本書の目的・学べること・読み進め方を最初に確認する。
+          </div>
+        </div>
+
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">本書の目的</a></li>
+            <li><a href="#s2">本書で学べること</a></li>
+            <li><a href="#s3">対象読者</a></li>
+            <li><a href="#s4">本書の読み進め方</a></li>
+          </ol>
+        </div>
+
+        <!-- 0-1 -->
+        <h2 id="s1"><span class="sec">0-1</span>本書の目的</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>本書のゴールは、AIを「使う」だけでなく<b>「理解し、設計できる」</b>レベルに到達すること。</span>
+        </div>
+        <p>ChatGPTやClaudeを日常的に使う人は増えた。一方で、その<b>中身</b>まで理解している人はまだ多くない。本書はこうした疑問に正面から答える。</p>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>どう生成しているか</h4><p>AIは文章をどのように作り出しているのか</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><h4>なぜ答えられるか</h4><p>なぜ回答でき、なぜ間違えるのか</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M2 13h2M20 13h2"/></svg></div><h4>エージェントとは</h4><p>AIエージェントとは何か</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><h4>どこまで任せるか</h4><p>AIにどこまで仕事を任せられるのか</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>むずかしい言葉は使わない</div>
+          <p>専門用語はできるだけ平易に置き換え、<b>図解・例え話・実務例</b>を交えて解説する。メリットだけでなくデメリットやリスクも合わせて扱う。</p>
+        </div>
+
+        <!-- 0-2 -->
+        <h2 id="s2"><span class="sec">0-2</span>本書で学べること</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 13 4 4L19 7"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>「AIとは何か」から「業務への活用・設計」まで、<b>仕組みと実践を地続き</b>で学べる。</span>
+        </div>
+        <table>
+          <tr><th>テーマ</th><th>学べる内容</th></tr>
+          <tr><td>基礎</td><td>AIとは何か／機械学習・深層学習・生成AI・LLMの違い</td></tr>
+          <tr><td>仕組み</td><td>ChatGPTが回答を生成する仕組み／LLM内部で行われている処理</td></tr>
+          <tr><td>モデル</td><td>ChatGPT・Claude・Geminiなど各モデルの違い</td></tr>
+          <tr><td>エージェント</td><td>AIエージェントの仕組み／RAG・MCP・Browser Agentなどの技術</td></tr>
+          <tr><td>実務</td><td>AIのメリット・デメリット・リスク／導入の考え方と業務活用の方法</td></tr>
+        </table>
+
+        <!-- 0-3 -->
+        <h2 id="s3"><span class="sec">0-3</span>対象読者</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 3.5a3 3 0 0 1 0 9M22 20a6 6 0 0 0-5-5.9"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>これから学ぶ初心者から、業務へ導入したい実務者・エンジニアまで幅広く対応。</span>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M7 9v5c0 1.5 2.5 3 5 3s5-1.5 5-3V9"/></svg></div><h4>これから学ぶ人</h4><p>生成AIをこれから学ぶ初心者／モデルの違いを知りたい人</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><h4>業務で使う人</h4><p>AIを業務へ導入したい人／DX推進担当者</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div><h4>つくる人</h4><p>システムエンジニア／AIエンジニアを目指す人</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div><h4>提案する人</h4><p>AIエージェントを学びたい人／AIコンサルタントを目指す人</p></div>
+        </div>
+
+        <!-- 0-4 -->
+        <h2 id="s4"><span class="sec">0-4</span>本書の読み進め方</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>章は<b>基礎→仕組み→エージェント→実務</b>の順に積み上がる。第1章から順に読むのがおすすめ。</span>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">基礎を知る<small>第1章</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">仕組みを知る<small>第2〜4章</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">エージェント<small>第5〜7章</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">設計・実務<small>第8〜12章＋付録</small></div>
+          </div>
+          <div class="figure-cap">図 0-4　知識を積み上げる4ステップ</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>読み進めのコツ</div>
+          <ul>
+            <li>各章はじめの<b>「一言でいうと」</b>で全体像をつかむ</li>
+            <li>図・表・カードを先に見ると理解が速い</li>
+            <li>章末の<b>理解度チェック・実践課題</b>で手を動かして定着させる</li>
+            <li>用語に迷ったら<b>付録の用語集</b>に戻る</li>
+          </ul>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AI時代に求められるのは「役割分担」の感覚</div>
+          <p>これからは<b>AIに任せる作業</b>と<b>人間が担う判断</b>を見分ける力が重要になる。本書を通じて、AIと協働するための土台を身につけてほしい。</p>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="index.html"><span class="dir">← 前へ</span><span class="t">目次トップ</span></a>
+          <a class="next" href="ch01.html"><span class="dir">次の章 →</span><span class="t">第1章 AIとは何か</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

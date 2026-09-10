@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第1章 AIとは何か｜生成AI・AIエージェント完全入門</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="progress"></div>
+<div class="layout">
+
+  <!-- ===== sidebar (全ページ共通) ===== -->
+  <aside class="sidebar">
+    <a class="brand" href="index.html">生成AI・AIエージェント完全入門<small>仕組みから実践まで</small></a>
+    <nav>
+      <div class="nav-group">本編</div>
+      <a class="ch" href="ch00.html"><span class="n">00</span><span>はじめに</span></a>
+      <a class="ch" href="ch01.html"><span class="n">01</span><span>AIとは何か</span></a>
+      <a class="ch" href="ch02.html"><span class="n">02</span><span>LLMはなぜ文章を生成できるのか</span></a>
+      <a class="ch" href="ch03.html"><span class="n">03</span><span>LLMはどのように学習しているのか</span></a>
+      <a class="ch" href="ch04.html"><span class="n">04</span><span>生成AIとAIエージェントの違い</span></a>
+      <a class="ch" href="ch05.html"><span class="n">05</span><span>メリット・デメリット・リスク</span></a>
+      <a class="ch" href="ch06.html"><span class="n">06</span><span>AIエージェントとは何か</span></a>
+      <a class="ch" href="ch07.html"><span class="n">07</span><span>エージェントを支える技術</span></a>
+      <a class="ch" href="ch08.html"><span class="n">08</span><span>AIはどのように仕事をこなすのか</span></a>
+      <a class="ch" href="ch09.html"><span class="n">09</span><span>AIが得意なこと・苦手なこと</span></a>
+      <a class="ch" href="ch10.html"><span class="n">10</span><span>AIシステムの設計</span></a>
+      <a class="ch" href="ch11.html"><span class="n">11</span><span>AI導入とガバナンス</span></a>
+      <a class="ch" href="ch12.html"><span class="n">12</span><span>AIの未来</span></a>
+      <a class="ch" href="ch13.html"><span class="n">13</span><span>付録</span></a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="menu" aria-label="メニュー">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23262b" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="ttl">第1章 AIとは何か</div>
+    </header>
+
+    <main class="content">
+      <div class="reading">
+
+        <!-- chapter header -->
+        <div class="ch-head">
+          <div class="ch-eyebrow"><span class="num">01</span><span>基礎</span></div>
+          <h1 class="ch-title">AIとは何か</h1>
+          <div class="ch-goal">
+            <div class="label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+              この章のゴール
+            </div>
+            <b>AI・機械学習・深層学習・生成AI・LLM</b> の関係を整理し、「ChatGPTはAI全体のどこにいるのか」を自分の言葉で説明できるようになる。
+          </div>
+        </div>
+
+        <!-- mini toc -->
+        <div class="toc-mini">
+          <div class="th">この章の項目</div>
+          <ol>
+            <li><a href="#s1">AIとは何か</a></li>
+            <li><a href="#s2">AIの歴史</a></li>
+            <li><a href="#s3">AI・機械学習・深層学習・生成AIの違い</a></li>
+            <li><a href="#s4">生成AIとは何か</a></li>
+            <li><a href="#s5">LLMとは</a></li>
+            <li><a href="#s6">ChatGPTの位置づけ</a></li>
+            <li><a href="#s7">できること・できないこと</a></li>
+          </ol>
+        </div>
+
+        <!-- 1-1 -->
+        <h2 id="s1"><span class="sec">1-1</span>AIとは何か</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a4 4 0 0 0-4 4 4 4 0 0 0-2 7 4 4 0 0 0 6 3 4 4 0 0 0 6-3 4 4 0 0 0-2-7 4 4 0 0 0-4-4Z"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIとは「人間が知的だと感じる仕事を、コンピュータで実現する技術の総称」。ChatGPTはその中の一部にすぎない。</span>
+        </div>
+        <p>AIは特定の製品名ではなく、技術全体を指す大きなカテゴリ。次のものはすべてAIに含まれる。</p>
+        <div class="cards">
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m4 19 5-4 4 3 3-2 4 3"/></svg></div><h4>画像・顔認証</h4><p>本人かどうかを判定する</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v9m0 0a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v3a3 3 0 0 0 3 3Zm-6 0a6 6 0 0 0 12 0M9 21h6"/></svg></div><h4>音声認識・翻訳</h4><p>話し言葉を理解し変換する</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><h4>最適ルート提案</h4><p>渋滞を予測して案内する</p></div>
+          <div class="card"><div class="ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 10h8M8 14h5"/><rect x="3" y="4" width="18" height="14" rx="2"/><path d="m8 22 4-4 4 4"/></svg></div><h4>ChatGPT</h4><p>質問への回答を生成する</p></div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>AIは「考える」のではなく「予測する」</div>
+          <p>現在のAIは意識を持って考えているわけではない。学習データ・統計・確率から<b>「次に最も適切と思われる答え」</b>を予測しているだけ。仕組みは第2章で扱う。</p>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは人間の知的作業を実現する技術の総称</li>
+            <li>ChatGPTはAI全体の一部</li>
+            <li>AIは「考える」より「予測する」</li>
+          </ul>
+        </div>
+
+
+
+        <a class="cta3d" href="experience/index.html">
+          <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg></span>
+          <span class="tx"><b>フル3D体験で見る ── AIが回答するまでの10ステップ</b><small>「このあと雨は降りますか？」を入力 → トークン化 → Attention → 推論 → 生成まで、回転・ズームしながら体験</small></span>
+          <span class="go">体験する →</span>
+        </a>
+
+        <!-- 1-2 -->
+        <h2 id="s2"><span class="sec">1-2</span>AIの歴史</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIは約70年かけて「ルールを書くAI」から「自ら学ぶAI」へ進化してきた。</span>
+        </div>
+        <div class="figure">
+          <div class="timeline">
+            <div class="ev"><span class="yr">1950s</span><p>「AI」という言葉が誕生（第1次ブーム）</p></div>
+            <div class="ev"><span class="yr">1980s</span><p>専門家の知識を登録するエキスパートシステム（第2次ブーム）</p></div>
+            <div class="ev"><span class="yr">2012</span><p>深層学習が急成長</p></div>
+            <div class="ev"><span class="yr">2017</span><p>Googleが <b>Transformer</b> を発表 ── 現在の生成AIの基礎</p></div>
+            <div class="ev"><span class="yr">2022</span><p>ChatGPT 公開</p></div>
+            <div class="ev"><span class="yr">2025〜</span><p>AIエージェント時代へ</p></div>
+          </div>
+          <div class="figure-cap">図 1-2　AI進化のあゆみ</div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">ルールを書くAI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">データから学ぶAI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">文章を生成するAI</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">仕事を実行するAI<small>AIエージェント</small></div>
+          </div>
+          <div class="figure-cap">「AIに質問する時代」から「AIへ仕事を依頼する時代」へ</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>AIは70年以上研究されてきた技術</li>
+            <li>Transformer（2017）が現在の生成AIの基盤</li>
+            <li>いまはAIエージェントの時代へ</li>
+          </ul>
+        </div>
+
+        <!-- 1-3 -->
+        <h2 id="s3"><span class="sec">1-3</span>AI・機械学習・深層学習・生成AIの違い</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v4M5 8 3 6m16 2 2-2M4 21h16"/><circle cx="12" cy="11" r="4"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>これらは対立概念ではなく「入れ子（親子）」の関係になっている。</span>
+        </div>
+        <div class="figure">
+          <div class="tree">
+            <ul>
+              <li><span class="node lv0">AI（人工知能）</span>
+                <ul>
+                  <li><span class="node">将棋AI / 顔認識 / 自動運転</span></li>
+                  <li><span class="node lv1">機械学習 ── データから学ぶ</span>
+                    <ul>
+                      <li><span class="node lv1">深層学習 ── ニューラルネットワーク</span>
+                        <ul>
+                          <li><span class="node lv1">生成AI ── 新しく作り出す</span>
+                            <ul>
+                              <li><span class="node">LLM ── ChatGPT / Claude / Gemini / Grok</span></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="figure-cap">図 1-3　AIの入れ子構造</div>
+        </div>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>機械学習</td><td>データから自動でルールを学ぶAI（犬の画像を大量に見て特徴を覚える）</td></tr>
+          <tr><td>深層学習</td><td>脳を模したニューラルネットワークを使う機械学習。画像・音声・文章を扱える</td></tr>
+          <tr><td>生成AI</td><td>判定ではなく、文章・画像・音楽などを新しく作り出すAI</td></tr>
+          <tr><td>LLM</td><td>文章を生成する代表格。ChatGPT等の中核</td></tr>
+        </table>
+
+        <!-- 1-4 -->
+        <h2 id="s4"><span class="sec">1-4</span>生成AIとは何か</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18" opacity=".0"/><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>従来AIは「判定」が仕事。生成AIは文章・画像・音楽・動画・コードを<b>新しく作る</b>。</span>
+        </div>
+        <table>
+          <tr><th>種類</th><th>代表例</th></tr>
+          <tr><td>文章</td><td>ChatGPT、Claude</td></tr>
+          <tr><td>画像</td><td>DALL·E、Midjourney、Stable Diffusion</td></tr>
+          <tr><td>動画</td><td>Sora、Veo</td></tr>
+          <tr><td>音楽・音声</td><td>Suno、Udio、ElevenLabs</td></tr>
+          <tr><td>プログラム</td><td>ChatGPT、Claude、GitHub Copilot</td></tr>
+        </table>
+        <div class="misuse">
+          <div class="row x"><span class="mk">✕ 誤解</span><span>AIはゼロから考えて文章を書いている</span></div>
+          <div class="row o"><span class="mk">○ 正しくは</span><span>「昔々」と来れば「あるところに…」と続く ── 学習したパターンから<b>次に続く可能性が高い言葉を予測</b>している</span></div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step">入力</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">Token に分割</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">意味を数字へ<small>Embedding</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step soft">次の語を予測</div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">文章生成</div>
+          </div>
+          <div class="figure-cap">図 1-4　生成AIは「予測」を何百回も繰り返している（詳細は第2章）</div>
+        </div>
+
+        <!-- 1-5 -->
+        <h2 id="s5"><span class="sec">1-5</span>LLM（大規模言語モデル）とは</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v12H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>LLM＝大量の文章を学習したAIモデル。ChatGPT・Claude・Geminiの「中身」はすべてLLM。</span>
+        </div>
+        <p>「モデル」とは<b>学習済みのAI</b>のこと。LLMは Wikipedia・ニュース・書籍・コードなど膨大な文章から<b>言葉と言葉のつながり</b>を学ぶ（暗記ではない）。回答は一気にではなく <b>1単語ずつ</b> 予測して作る。</p>
+        <div class="figure">
+          <div class="layers">
+            <div class="layer l1">ChatGPT（会話アプリ）<small>チャット画面・検索・画像生成・音声…</small></div>
+            <div class="layer l3">LLM（GPTモデル）＝中核の頭脳</div>
+          </div>
+          <div class="figure-cap">図 1-5　ChatGPTというサービスの中でLLMが動いている</div>
+        </div>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>ここだけ覚える</div>
+          <ul>
+            <li>LLMは文章を学習したAIモデル</li>
+            <li>ChatGPT・Claude・Geminiの中核技術</li>
+            <li>1単語ずつ予測して文章を作る</li>
+          </ul>
+        </div>
+
+        <!-- 1-6 -->
+        <h2 id="s6"><span class="sec">1-6</span>ChatGPTはAI全体のどこにいるのか</h2>
+        <div class="figure">
+          <div class="flow">
+            <div class="step">AI</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">生成AI</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">LLM</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step">GPT（モデル）</div><div class="arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+            <div class="step accent">ChatGPT（サービス）</div>
+          </div>
+          <div class="figure-cap">図 1-6　用語の整理：技術名・モデル名・サービス名は別物</div>
+        </div>
+        <div class="callout note">
+          <div class="co-h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>混同しやすい3語</div>
+          <p><b>ChatGPT</b>＝サービス名／<b>GPT</b>＝AIモデル名／<b>LLM</b>＝技術名。基本の仕組みはClaude・Geminiも同じで、違うのは学習方法・設計・安全性・得意分野（第4章で比較）。</p>
+        </div>
+
+        <!-- 1-7 -->
+        <h2 id="s7"><span class="sec">1-7</span>AIができること・できないこと</h2>
+        <div class="lead">
+          <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M21 5 12 14l-3-3"/></svg></span>
+          <span class="txt"><small>一言でいうと</small>AIは万能ではない。AIは「作業」が得意、人間は「判断」が得意。</span>
+        </div>
+        <div class="compare">
+          <div class="col good">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>AIが得意（任せる）</h4>
+            <ul><li>要約・翻訳・分類・検索</li><li>文章・メール・議事録作成</li><li>コード生成・アイデア出し</li><li>FAQ対応</li></ul>
+          </div>
+          <div class="col bad">
+            <h4><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>人間が行う（判断）</h4>
+            <ul><li>最終判断・承認・責任</li><li>倫理判断・戦略</li><li>真偽の保証</li><li>人とのコミュニケーション</li></ul>
+          </div>
+        </div>
+        <div class="figure">
+          <div class="flow h">
+            <div class="step soft">AI<small>資料作成</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step">人間<small>レビュー・修正</small></div><div class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+            <div class="step accent">提出</div>
+          </div>
+          <div class="figure-cap">図 1-7　これからは「奪い合い」でなく「役割分担」</div>
+        </div>
+
+        <hr class="hr">
+
+        <!-- まとめ -->
+        <h2><span class="sec">★</span>第1章まとめ</h2>
+        <div class="keypoints">
+          <div class="kp-h"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 13 4 4L19 7"/></svg>この5つだけ覚えていれば十分</div>
+          <ul>
+            <li>AIは人間の知的作業を実現する技術の総称</li>
+            <li>ChatGPTはAI全体のほんの一部</li>
+            <li>LLMは文章を扱うAIモデル</li>
+            <li>生成AIは新しいコンテンツを作るAI</li>
+            <li>AIは万能でなく、人間との役割分担が重要</li>
+          </ul>
+        </div>
+        <h3>重要キーワード</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th></tr>
+          <tr><td>AI</td><td>人間の知的作業を実現する技術全体</td></tr>
+          <tr><td>機械学習</td><td>データから学習するAI</td></tr>
+          <tr><td>深層学習</td><td>ニューラルネットワークを使う機械学習</td></tr>
+          <tr><td>生成AI</td><td>新しい文章・画像などを生成するAI</td></tr>
+          <tr><td>LLM</td><td>大規模言語モデル</td></tr>
+          <tr><td>Transformer</td><td>LLMの中核技術（第2章）</td></tr>
+          <tr><td>AIエージェント</td><td>AIが仕事を実行する仕組み（第6章）</td></tr>
+        </table>
+
+        <!-- quiz -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/></svg>理解度チェック</div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">1</span>AIとは何を指す？</div>
+            <ul class="opts"><li>A. ChatGPTだけ</li><li>B. 人工知能全体</li><li>C. 画像生成AIだけ</li><li>D. ロボットだけ</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　AIは人工知能全体を指し、ChatGPTはその一部。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">2</span>正しい親子関係は？</div>
+            <ul class="opts"><li>A. ChatGPT→AI→LLM</li><li>B. AI→ChatGPT→LLM</li><li>C. AI→機械学習→深層学習→生成AI→LLM</li><li>D. LLM→AI→ChatGPT</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　AIが最も大きく、その中に機械学習→深層学習→生成AI→LLMが入れ子になっている。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">3</span>生成AIが得意なのは？</div>
+            <ul class="opts"><li>A. 人間関係の調整</li><li>B. 倫理的判断</li><li>C. 要約や文章作成</li><li>D. 最終意思決定</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　要約・翻訳・分類・文章生成などが得意。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">4</span>ChatGPTとは？</div>
+            <ul class="opts"><li>A. AIそのもの</li><li>B. GPTを利用したサービス</li><li>C. 機械学習</li><li>D. Transformer</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：B</b>　ChatGPTはGPTモデルを使ったチャットサービス。</div>
+          </div>
+
+          <div class="quiz">
+            <div class="q"><span class="qn">5</span>AIが苦手なのは？</div>
+            <ul class="opts"><li>A. 要約</li><li>B. 翻訳</li><li>C. 責任を伴う判断</li><li>D. コード生成</li></ul>
+            <button class="reveal">答えを見る</button>
+            <div class="answer"><b>正解：C</b>　責任・倫理を伴う判断は人間が行うべき。</div>
+          </div>
+        </div>
+
+        <!-- tasks -->
+        <div class="quiz-wrap">
+          <div class="qz-h"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>実践課題</div>
+          <div class="tasks">
+            <div class="task"><h4><span class="tn">課題1</span>AIを探す</h4><p>身の回りで使われているAIを10個挙げてみる（顔認証・地図・動画推薦・スパム判定…）。</p></div>
+            <div class="task"><h4><span class="tn">課題2</span>分類する</h4><p>ChatGPT / Midjourney / 顔認証 / 自動運転 / Siri / Gemini を「AI・機械学習・深層学習・生成AI」のどこに置けるか考える。</p></div>
+            <div class="task"><h4><span class="tn">課題3</span>AIに聞く</h4>
+              <div class="prompt-box">AIとは何ですか？
+初心者にも分かるように、例え話を使って説明してください。</div>
+              <p>本書の説明との共通点・違いをまとめる。</p>
+            </div>
+            <div class="task"><h4><span class="tn">課題4</span>人に説明する</h4><p>「AIとは／ChatGPTとは／生成AIとは」を自分の言葉で説明できるか試す。説明できれば理解できている証拠。</p></div>
+          </div>
+        </div>
+
+        <!-- pager -->
+        <nav class="pager">
+          <a class="prev" href="ch00.html"><span class="dir">← 前の章</span><span class="t">はじめに</span></a>
+          <a class="next" href="ch02.html"><span class="dir">次の章 →</span><span class="t">第2章 LLMはなぜ文章を生成できるのか</span></a>
+        </nav>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
